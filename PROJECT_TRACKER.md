@@ -95,8 +95,10 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [x] Open a weekly entry directly in the existing edit form.
 - [x] Add date and weekly aggregation tests.
 - [x] Complete interactive desktop browser verification.
-- [ ] Deploy Phase 4 version 4.0.0 to GitHub Pages.
+- [x] Deploy Phase 4 version 4.0.0 to GitHub Pages.
 - [ ] Complete the Phase 4 physical iPad checklist.
+
+Deployment commit: `5003118`
 
 ## Working agreement
 
