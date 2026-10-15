@@ -27,6 +27,9 @@
     link.textContent = "Open export in new page";
     link.className = "button backup-download";
     byId("backup-new-page").innerHTML = "";
+    byId("backup-new-page").style.display = "inline-block";
+    byId("backup-new-page").style.margin = "0 8px 8px 0";
+    byId("backup-new-page").style.verticalAlign = "top";
     byId("backup-new-page").appendChild(link);
     link = document.createElement("a");
     link.href = url;
@@ -34,6 +37,9 @@
     link.textContent = "Download " + name;
     link.className = "button button-primary backup-download";
     byId("backup-download").innerHTML = "";
+    byId("backup-download").style.display = "inline-block";
+    byId("backup-download").style.margin = "0 8px 8px 0";
+    byId("backup-download").style.verticalAlign = "top";
     byId("backup-download").appendChild(link);
     notice("Your export is ready. Tap the download link.");
   }
