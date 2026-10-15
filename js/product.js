@@ -125,6 +125,7 @@
     byId("entry-id").value = "";
     byId("entry-hours").value = "0";
     byId("entry-minutes").value = "0";
+    byId("entry-seconds").value = "0";
     byId("entry-description").value = "";
     byId("entry-billable").checked = true;
     text(byId("entry-error"), "");
@@ -226,7 +227,7 @@
     var date = byId("selected-date").value;
     var projectId = byId("entry-project").value;
     var taskId = byId("entry-task").value || null;
-    var duration = state.domain.parseDuration(byId("entry-hours").value, byId("entry-minutes").value);
+    var duration = state.domain.parseDurationSeconds(byId("entry-hours").value, byId("entry-minutes").value, byId("entry-seconds").value);
     var project = state.domain.findById(state.data.projects, projectId);
     var task = taskId ? state.domain.findById(state.data.tasks, taskId) : null;
     var existing = state.domain.findById(state.data.timeEntries, id);
@@ -255,7 +256,7 @@
         existing.date = date;
         existing.projectId = projectId;
         existing.taskId = taskId;
-        existing.durationMinutes = duration.minutes;
+        existing.durationSeconds = duration.seconds;
         existing.description = state.domain.trim(byId("entry-description").value);
         existing.billable = byId("entry-billable").checked;
         existing.updatedAt = now;
@@ -265,7 +266,7 @@
           date: date,
           projectId: projectId,
           taskId: taskId,
-          durationMinutes: duration.minutes,
+          durationSeconds: duration.seconds,
           description: state.domain.trim(byId("entry-description").value),
           billable: byId("entry-billable").checked,
           createdAt: now,
@@ -315,8 +316,9 @@
     state.data.settings.selectedDate = entry.date;
     fillProjectSelect(byId("entry-project"), entry.projectId, true);
     fillTaskSelect(byId("entry-task"), entry.projectId, entry.taskId || "");
-    byId("entry-hours").value = String(Math.floor(entry.durationMinutes / 60));
-    byId("entry-minutes").value = String(entry.durationMinutes % 60);
+    byId("entry-hours").value = String(Math.floor(entry.durationSeconds / 3600));
+    byId("entry-minutes").value = String(Math.floor((entry.durationSeconds % 3600) / 60));
+    byId("entry-seconds").value = String(entry.durationSeconds % 60);
     byId("entry-description").value = entry.description;
     byId("entry-billable").checked = entry.billable;
     text(byId("entry-submit"), "Save time entry");
@@ -363,7 +365,7 @@
         date: entry.date,
         projectId: entry.projectId,
         taskId: entry.taskId,
-        durationMinutes: entry.durationMinutes,
+        durationSeconds: entry.durationSeconds,
         description: entry.description,
         billable: entry.billable,
         createdAt: now,
@@ -489,7 +491,7 @@
     state.data.settings.selectedDate = selectedDate;
     byId("selected-date").value = selectedDate;
     text(byId("entries-date-label"), selectedDate);
-    text(byId("day-total"), state.domain.formatDuration(state.domain.totalForDate(state.data.timeEntries, selectedDate)));
+    text(byId("day-total"), state.domain.formatDurationSeconds(state.domain.totalForDate(state.data.timeEntries, selectedDate)));
     clearChildren(list);
     entries.length ? hide(byId("entries-empty")) : show(byId("entries-empty"));
 
@@ -511,7 +513,7 @@
       text(meta, entry.billable ? "Billable" : "Non-billable");
       duration = document.createElement("span");
       duration.className = "entry-duration";
-      text(duration, state.domain.formatDuration(entry.durationMinutes));
+      text(duration, state.domain.formatDurationSeconds(entry.durationSeconds));
       actions = document.createElement("span");
       actions.className = "entry-actions";
       actions.appendChild(actionButton("Edit", "entry-edit", entry.id, false));

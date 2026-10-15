@@ -76,8 +76,8 @@ The test timer must count from saved timestamps, recover across reloads, Safari
 backgrounding and device sleep, pause without advancing, resume from its saved
 elapsed time, and reset safely without losing Phase 1 notes.
 
-Implementation status: complete in version 2.0.0; physical iPad acceptance is
-pending.
+Implementation status: complete in version 2.0.0; physical iPad acceptance
+passed.
 
 ### User outcome
 
@@ -103,6 +103,8 @@ The application is useful for basic daily time tracking without a live timer.
 - Archive a project without losing the readability of historical entries.
 
 ## Phase 3 — Reliable timer
+
+Implementation status: in progress for version 3.0.0.
 
 ### User outcome
 

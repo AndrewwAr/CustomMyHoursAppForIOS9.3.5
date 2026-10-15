@@ -2,7 +2,7 @@
   "use strict";
 
   var STORAGE_KEY = "myhours-custom.phase1.data";
-  var SCHEMA_VERSION = 3;
+  var SCHEMA_VERSION = 4;
 
   function createEmptyData() {
     return {
@@ -56,11 +56,24 @@
       return false;
     }
 
-    if (timer.status === "running") {
-      return typeof timer.startedAtMs === "number";
+    if ((timer.status === "running" && typeof timer.startedAtMs !== "number") ||
+        (timer.status === "paused" && timer.startedAtMs !== null)) {
+      return false;
     }
 
-    return timer.startedAtMs === null;
+    return (timer.projectId === null || typeof timer.projectId === "string") &&
+      (timer.taskId === null || typeof timer.taskId === "string") &&
+      typeof timer.description === "string" && typeof timer.billable === "boolean" &&
+      (timer.startedDate === null || /^\d{4}-\d{2}-\d{2}$/.test(timer.startedDate));
+  }
+
+  function isValidLegacyTimer(timer) {
+    if (timer === null) { return true; }
+    return !!timer && (timer.status === "running" || timer.status === "paused") &&
+      typeof timer.elapsedMs === "number" && timer.elapsedMs >= 0 &&
+      typeof timer.updatedAtMs === "number" &&
+      ((timer.status === "running" && typeof timer.startedAtMs === "number") ||
+       (timer.status === "paused" && timer.startedAtMs === null));
   }
 
   function isArray(value) {
@@ -102,9 +115,20 @@
       /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
       typeof entry.projectId === "string" &&
       (entry.taskId === null || typeof entry.taskId === "string") &&
-      typeof entry.durationMinutes === "number" &&
-      entry.durationMinutes > 0 && entry.durationMinutes <= 1440 &&
-      Math.floor(entry.durationMinutes) === entry.durationMinutes &&
+      typeof entry.durationSeconds === "number" &&
+      entry.durationSeconds > 0 && entry.durationSeconds <= 2678400 &&
+      Math.floor(entry.durationSeconds) === entry.durationSeconds &&
+      typeof entry.description === "string" && typeof entry.billable === "boolean" &&
+      typeof entry.createdAt === "string" && typeof entry.updatedAt === "string";
+  }
+
+  function isValidVersion3Entry(entry) {
+    return !!entry && typeof entry.id === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
+      typeof entry.projectId === "string" &&
+      (entry.taskId === null || typeof entry.taskId === "string") &&
+      typeof entry.durationMinutes === "number" && entry.durationMinutes > 0 &&
+      entry.durationMinutes <= 1440 && Math.floor(entry.durationMinutes) === entry.durationMinutes &&
       typeof entry.description === "string" && typeof entry.billable === "boolean" &&
       typeof entry.createdAt === "string" && typeof entry.updatedAt === "string";
   }
@@ -160,12 +184,30 @@
       }
     }
 
+    if (data.timer && data.timer.projectId !== null) {
+      if (!findItem(data.projects, data.timer.projectId)) { return false; }
+      if (data.timer.taskId !== null) {
+        task = findItem(data.tasks, data.timer.taskId);
+        if (!task || task.projectId !== data.timer.projectId) { return false; }
+      }
+    } else if (data.timer && data.timer.taskId !== null) {
+      return false;
+    }
+
     return true;
   }
 
   function isValidVersion2(data) {
     return !!data && data.schemaVersion === 2 && validateRecords(data.records) &&
-      isValidTimer(data.timer) && !!data.metadata && typeof data.metadata === "object";
+      isValidLegacyTimer(data.timer) && !!data.metadata && typeof data.metadata === "object";
+  }
+
+
+  function isValidVersion3(data) {
+    return !!data && data.schemaVersion === 3 && validateRecords(data.records) &&
+      isValidLegacyTimer(data.timer) && everyItem(data.projects, isValidProject) &&
+      everyItem(data.tasks, isValidTask) && everyItem(data.timeEntries, isValidVersion3Entry) &&
+      isValidSettings(data.settings) && !!data.metadata && typeof data.metadata === "object";
   }
 
   function validateData(data) {
@@ -193,8 +235,8 @@
     }
 
     if (isValidVersion2(data)) {
-      return {
-        schemaVersion: SCHEMA_VERSION,
+      data = {
+        schemaVersion: 3,
         records: data.records,
         timer: data.timer,
         projects: [],
@@ -205,6 +247,29 @@
         },
         metadata: data.metadata
       };
+    }
+
+    if (isValidVersion3(data)) {
+      data.schemaVersion = SCHEMA_VERSION;
+      data.timer = data.timer ? {
+        status: data.timer.status,
+        startedAtMs: data.timer.startedAtMs,
+        elapsedMs: data.timer.elapsedMs,
+        updatedAtMs: data.timer.updatedAtMs,
+        projectId: null,
+        taskId: null,
+        description: "",
+        billable: true,
+        startedDate: null
+      } : null;
+      data.timeEntries = data.timeEntries.map(function (entry) {
+        return {
+          id: entry.id, date: entry.date, projectId: entry.projectId,
+          taskId: entry.taskId, durationSeconds: entry.durationMinutes * 60,
+          description: entry.description, billable: entry.billable,
+          createdAt: entry.createdAt, updatedAt: entry.updatedAt
+        };
+      });
     }
 
     return data;

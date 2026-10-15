@@ -8,8 +8,8 @@ Last updated: 2026-10-16
 | --- | --- | --- |
 | Phase 1 — compatibility and persistence proof | Complete | Passed |
 | Phase 1.5 — persistent timer proof | Complete | Passed |
-| Phase 2 — manual time-entry MVP | Implemented | Pending physical test |
-| Phase 3 — timer-to-time-entry workflow | Not started | Not tested |
+| Phase 2 — manual time-entry MVP | Complete | Passed |
+| Phase 3 — timer-to-time-entry workflow | In progress | Not tested |
 | Phase 4 — weekly timesheet and reporting | Not started | Not tested |
 | Phase 5 — backup, restore, and export | Not started | Not tested |
 | Phase 6 — product hardening | Not started | Not tested |
@@ -59,7 +59,25 @@ Last updated: 2026-10-16
 - [x] Complete an interactive browser test covering create, edit, duplicate,
   delete, archive, restore, historical names, and recalculated daily totals.
 - [x] Deploy Phase 2 version 2.0.0 to GitHub Pages.
-- [ ] Complete the Phase 2 physical iPad checklist.
+- [x] Complete the Phase 2 physical iPad checklist.
+
+Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
+
+## Phase 3 implementation
+
+- [x] Upgrade stored time entries to exact-second durations without losing data.
+- [x] Assign a running timer to a project and optional task.
+- [x] Capture a timer description and billable status.
+- [x] Preserve the timer assignment across reload, Safari restart, sleep, and
+  backgrounding.
+- [x] Pause and resume without changing the captured assignment.
+- [x] Stop and save the elapsed timer as a time entry.
+- [x] Cancel a timer without creating an entry.
+- [x] Support the stop, select another assignment, and restart workflow.
+- [x] Add automated migration, timer metadata, and timer-to-entry tests.
+- [x] Complete interactive desktop browser verification.
+- [ ] Deploy Phase 3 to GitHub Pages.
+- [ ] Complete the Phase 3 physical iPad checklist.
 
 Deployment commit: `7c2e5b2`
 

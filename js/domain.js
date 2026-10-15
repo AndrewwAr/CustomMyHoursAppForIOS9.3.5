@@ -51,10 +51,36 @@
     return { valid: true, minutes: (hours * 60) + minutes, message: "" };
   }
 
+  function parseDurationSeconds(hoursValue, minutesValue, secondsValue) {
+    var base = parseDuration(hoursValue, minutesValue);
+    var secondsText = trim(secondsValue);
+    var seconds = secondsText === "" ? 0 : Number(secondsText);
+
+    if (!isFinite(seconds) || Math.floor(seconds) !== seconds || seconds < 0 || seconds > 59) {
+      return { valid: false, seconds: 0, message: "Seconds must be a whole number from 0 to 59." };
+    }
+    if (!base.valid && !(Number(hoursValue || 0) === 0 && Number(minutesValue || 0) === 0 && seconds > 0)) {
+      return { valid: false, seconds: 0, message: base.message };
+    }
+    if (base.minutes === 1440 && seconds > 0) {
+      return { valid: false, seconds: 0, message: "Enter a duration up to 24 hours." };
+    }
+    return { valid: true, seconds: (base.minutes * 60) + seconds, message: "" };
+  }
+
   function formatDuration(totalMinutes) {
     var minutes = Math.max(0, Math.floor(totalMinutes));
     var hours = Math.floor(minutes / 60);
     return hours + "h " + pad(minutes % 60) + "m";
+  }
+
+  function formatDurationSeconds(totalSeconds) {
+    var seconds = Math.max(0, Math.floor(totalSeconds));
+    var hours = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds % 3600) / 60);
+    var remainder = seconds % 60;
+
+    return hours + "h " + pad(minutes) + "m" + (remainder ? " " + pad(remainder) + "s" : "");
   }
 
   function findById(items, id) {
@@ -95,7 +121,7 @@
 
     for (index = 0; index < entries.length; index += 1) {
       if (entries[index].date === selectedDate) {
-        total += entries[index].durationMinutes;
+        total += entries[index].durationSeconds;
       }
     }
 
@@ -117,17 +143,34 @@
     return false;
   }
 
+  function createTimerEntry(timer, elapsedMs, createdAt, id, fallbackDate) {
+    return {
+      id: id,
+      date: timer.startedDate || fallbackDate,
+      projectId: timer.projectId,
+      taskId: timer.taskId,
+      durationSeconds: Math.max(1, Math.floor(Math.max(0, elapsedMs) / 1000)),
+      description: timer.description,
+      billable: timer.billable,
+      createdAt: createdAt,
+      updatedAt: createdAt
+    };
+  }
+
   root.MHDomain = {
     trim: trim,
     dateKey: dateKey,
     isValidDateKey: isValidDateKey,
     parseDuration: parseDuration,
+    parseDurationSeconds: parseDurationSeconds,
     formatDuration: formatDuration,
+    formatDurationSeconds: formatDurationSeconds,
     findById: findById,
     activeProjects: activeProjects,
     tasksForProject: tasksForProject,
     entriesForDate: entriesForDate,
     totalForDate: totalForDate,
-    hasDuplicateName: hasDuplicateName
+    hasDuplicateName: hasDuplicateName,
+    createTimerEntry: createTimerEntry
   };
 }(this));

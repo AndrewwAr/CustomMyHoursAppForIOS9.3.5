@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=2.0.0">
+    <link rel="stylesheet" href="css/app.css?v=3.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,13 +30,13 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v2.0.0</span>
+      <span id="version-label" class="version-label">v3.0.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
       <button id="nav-today" class="nav-button is-active" type="button">Today</button>
       <button id="nav-projects" class="nav-button" type="button">Projects</button>
-      <button id="nav-timer" class="nav-button" type="button">Timer test</button>
+      <button id="nav-timer" class="nav-button" type="button">Timer</button>
       <button id="nav-records" class="nav-button" type="button">Storage test</button>
       <button id="nav-diagnostics" class="nav-button" type="button">Diagnostics</button>
     </nav>
@@ -78,6 +78,10 @@
               <div class="duration-field">
                 <label for="entry-minutes">Minutes</label>
                 <input id="entry-minutes" type="number" min="0" max="59" step="1" value="0">
+              </div>
+              <div class="duration-field">
+                <label for="entry-seconds">Seconds</label>
+                <input id="entry-seconds" type="number" min="0" max="59" step="1" value="0">
               </div>
               <div class="billable-field">
                 <label for="entry-billable">
@@ -217,27 +221,44 @@
 
       <section id="timer-view" class="view-panel is-hidden" aria-labelledby="timer-heading">
         <div class="panel timer-panel">
-          <h2 id="timer-heading">Persistent timer test</h2>
-          <p class="intro-copy">This stopwatch uses saved timestamps. It should continue accurately while Safari is closed, backgrounded, or the iPad is asleep.</p>
+          <h2 id="timer-heading">Track time</h2>
+          <p class="intro-copy">Choose the work first. The timer and its assignment are saved on this device while Safari is closed, backgrounded, or the iPad is asleep.</p>
+          <div class="field-row two-columns timer-fields">
+            <div class="field-column">
+              <label for="timer-project">Project</label>
+              <select id="timer-project"></select>
+            </div>
+            <div class="field-column">
+              <label for="timer-task">Task</label>
+              <select id="timer-task"></select>
+            </div>
+          </div>
+          <label class="timer-label" for="timer-description">Description</label>
+          <textarea id="timer-description" maxlength="500" rows="2" placeholder="What are you working on?"></textarea>
+          <label class="timer-billable" for="timer-billable">
+            <input id="timer-billable" type="checkbox" checked>
+            Billable
+          </label>
           <div id="timer-display" class="timer-display" aria-live="off">00:00:00</div>
           <p id="timer-state" class="timer-state">Ready to start</p>
           <div class="timer-actions">
             <button id="timer-toggle" class="button button-primary timer-main-button" type="button">Start timer</button>
-            <button id="timer-reset" class="button button-danger" type="button" disabled>Reset</button>
+            <button id="timer-save" class="button" type="button" disabled>Stop &amp; save</button>
+            <button id="timer-reset" class="button button-danger" type="button" disabled>Cancel timer</button>
           </div>
           <p id="timer-error" class="field-error" role="alert"></p>
         </div>
 
         <div class="panel test-checklist">
-          <h2>Phase 1.5 iPad test</h2>
+          <h2>Phase 3 iPad test</h2>
           <ol>
-            <li>Start the timer and watch it count for at least 10 seconds.</li>
-            <li>Press the Home button, wait one minute, return, and check the elapsed time.</li>
-            <li>Lock the iPad, wait one minute, unlock it, and check the elapsed time.</li>
-            <li>Refresh the page while it is running and confirm that it continues.</li>
-            <li>Close Safari, reopen this page, and confirm that it continues.</li>
-            <li>Pause it, wait, and confirm that the displayed time does not increase.</li>
-            <li>Resume it, verify counting continues, then reset it.</li>
+            <li>Select a project and task, add a description, then start the timer.</li>
+            <li>Background Safari or lock the iPad, wait, return, and verify it continued.</li>
+            <li>Refresh the page and confirm the timer, assignment, and description recover.</li>
+            <li>Pause, wait, resume, then use Stop &amp; save.</li>
+            <li>Open Today and verify one entry with the exact elapsed seconds.</li>
+            <li>Start another timer, cancel it, and verify no entry was created.</li>
+            <li>Stop a timer, select another project/task, and start again.</li>
           </ol>
         </div>
       </section>
@@ -262,10 +283,10 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=2.0.0"></script>
-    <script src="js/timer.js?v=2.0.0"></script>
-    <script src="js/domain.js?v=2.0.0"></script>
-    <script src="js/product.js?v=2.0.0"></script>
-    <script src="js/app.js?v=2.0.0"></script>
+    <script src="js/storage.js?v=3.0.0"></script>
+    <script src="js/timer.js?v=3.0.0"></script>
+    <script src="js/domain.js?v=3.0.0"></script>
+    <script src="js/product.js?v=3.0.0"></script>
+    <script src="js/app.js?v=3.0.0"></script>
   </body>
 </html>

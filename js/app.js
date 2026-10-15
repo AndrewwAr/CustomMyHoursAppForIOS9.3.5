@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "2.0.0-phase2";
+  var APP_VERSION = "3.0.0-phase3";
   var repository;
   var data;
   var storageStatus;
@@ -196,6 +196,7 @@
       renderDiagnostics();
     } else if (name === "timer") {
       renderTimer();
+      renderTimerAssignment(data.timer);
     } else if (name === "today" || name === "projects") {
       window.MHProduct.renderAll();
     }
@@ -228,11 +229,62 @@
     }
   }
 
+  function appendTimerOption(select, value, label, selected) {
+    var option = document.createElement("option");
+    option.value = value;
+    setText(option, label);
+    option.selected = value === selected;
+    select.appendChild(option);
+  }
+
+  function fillTimerProjects(selectedId) {
+    var select = byId("timer-project");
+    var project;
+    var index;
+    while (select.firstChild) { select.removeChild(select.firstChild); }
+    appendTimerOption(select, "", data.projects.length ? "Select a project" : "Create a project first", selectedId);
+    for (index = 0; index < data.projects.length; index += 1) {
+      project = data.projects[index];
+      if (!project.archived || project.id === selectedId) {
+        appendTimerOption(select, project.id, project.name + (project.archived ? " (archived)" : ""), selectedId);
+      }
+    }
+  }
+
+  function fillTimerTasks(projectId, selectedId) {
+    var select = byId("timer-task");
+    var tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
+    var index;
+    while (select.firstChild) { select.removeChild(select.firstChild); }
+    appendTimerOption(select, "", "No task", selectedId);
+    for (index = 0; index < tasks.length; index += 1) {
+      appendTimerOption(select, tasks[index].id, tasks[index].name + (tasks[index].archived ? " (archived)" : ""), selectedId);
+    }
+  }
+
+  function renderTimerAssignment(timer) {
+    var projectId = timer && timer.projectId ? timer.projectId : byId("timer-project").value;
+    var taskId = timer && timer.taskId ? timer.taskId : byId("timer-task").value;
+    var locked = !!(timer && timer.status === "running");
+
+    fillTimerProjects(projectId);
+    fillTimerTasks(projectId, taskId);
+    if (timer) {
+      byId("timer-description").value = timer.description;
+      byId("timer-billable").checked = timer.billable;
+    }
+    byId("timer-project").disabled = locked;
+    byId("timer-task").disabled = locked;
+    byId("timer-description").disabled = locked;
+    byId("timer-billable").disabled = locked;
+  }
+
   function renderTimer() {
     var timer = data ? data.timer : null;
     var elapsed = window.MHTimer.getElapsed(timer, new Date().getTime());
     var toggle = byId("timer-toggle");
     var reset = byId("timer-reset");
+    var save = byId("timer-save");
 
     setText(byId("timer-display"), formatElapsed(elapsed));
     setText(byId("timer-error"), "");
@@ -241,14 +293,17 @@
       setText(byId("timer-state"), "Ready to start");
       setText(toggle, "Start timer");
       reset.disabled = true;
+      save.disabled = true;
     } else if (timer.status === "running") {
       setText(byId("timer-state"), "Running - saved on this device");
       setText(toggle, "Pause timer");
       reset.disabled = false;
+      save.disabled = false;
     } else {
       setText(byId("timer-state"), "Paused - elapsed time is saved");
       setText(toggle, "Resume timer");
       reset.disabled = false;
+      save.disabled = false;
     }
   }
 
@@ -271,6 +326,11 @@
 
   function toggleTimer() {
     var now = new Date().getTime();
+    var projectId = byId("timer-project").value;
+    var taskId = byId("timer-task").value || null;
+    var project = window.MHDomain.findById(data.projects, projectId);
+    var task = taskId ? window.MHDomain.findById(data.tasks, taskId) : null;
+    var details;
 
     if (!storageStatus.available) {
       setText(byId("timer-error"), "Local storage is unavailable. The timer cannot be started safely.");
@@ -280,7 +340,80 @@
     if (data.timer && data.timer.status === "running") {
       saveTimerChange(window.MHTimer.pause(data.timer, now), "The timer was paused and saved.");
     } else {
-      saveTimerChange(window.MHTimer.start(data.timer, now), "The timer is running and will survive reloads.");
+      if (!project || project.archived) {
+        setText(byId("timer-error"), "Select an active project before starting the timer.");
+        return;
+      }
+      if (task && (task.projectId !== projectId || task.archived)) {
+        setText(byId("timer-error"), "Select an active task belonging to this project.");
+        return;
+      }
+      details = {
+        projectId: projectId,
+        taskId: taskId,
+        description: window.MHDomain.trim(byId("timer-description").value),
+        billable: byId("timer-billable").checked,
+        startedDate: data.timer && data.timer.startedDate ? data.timer.startedDate : window.MHDomain.dateKey(new Date())
+      };
+      if (data.timer) {
+        data.timer.projectId = details.projectId;
+        data.timer.taskId = details.taskId;
+        data.timer.description = details.description;
+        data.timer.billable = details.billable;
+        data.timer.startedDate = details.startedDate;
+      }
+      saveTimerChange(window.MHTimer.start(data.timer, now, details), "The timer is running and will survive reloads.");
+    }
+    renderTimerAssignment(data.timer);
+  }
+
+  function stopAndSaveTimer() {
+    var timer = data.timer;
+    var elapsedSeconds;
+    var now;
+    var entry;
+    var projectId = byId("timer-project").value;
+    var taskId = byId("timer-task").value || null;
+    var project = window.MHDomain.findById(data.projects, projectId);
+    var task = taskId ? window.MHDomain.findById(data.tasks, taskId) : null;
+
+    if (!timer || !project) {
+      setText(byId("timer-error"), "Assign the timer to a project before saving it.");
+      return;
+    }
+    if (task && task.projectId !== projectId) {
+      setText(byId("timer-error"), "The selected task does not belong to this project.");
+      return;
+    }
+    timer.projectId = projectId;
+    timer.taskId = taskId;
+    timer.description = window.MHDomain.trim(byId("timer-description").value);
+    timer.billable = byId("timer-billable").checked;
+    elapsedSeconds = Math.max(1, Math.floor(window.MHTimer.getElapsed(timer, new Date().getTime()) / 1000));
+    now = new Date().toISOString();
+    entry = window.MHDomain.createTimerEntry(
+      timer,
+      elapsedSeconds * 1000,
+      now,
+      "entry-" + String(new Date().getTime()) + "-" + String(Math.floor(Math.random() * 100000)),
+      window.MHDomain.dateKey(new Date())
+    );
+    data.timeEntries.push(entry);
+    data.timer = null;
+    data.settings.selectedDate = entry.date;
+    try {
+      repository.save(data);
+      stopTimerRefresh();
+      renderTimer();
+      renderTimerAssignment(null);
+      window.MHProduct.renderAll();
+      setNotice("success", "Timer saved as " + window.MHDomain.formatDurationSeconds(elapsedSeconds) + ".");
+    } catch (error) {
+      data.timeEntries.pop();
+      data.timer = timer;
+      renderTimer();
+      setText(byId("timer-error"), error.message);
+      setNotice("error", error.message);
     }
   }
 
@@ -289,9 +422,14 @@
       return;
     }
 
-    if (window.confirm("Reset the timer to 00:00:00?")) {
-      saveTimerChange(null, "The timer was reset.");
+    if (window.confirm("Cancel this timer without saving a time entry?")) {
+      saveTimerChange(null, "The timer was cancelled. No entry was created.");
+      renderTimerAssignment(null);
     }
+  }
+
+  function changeTimerProject() {
+    fillTimerTasks(byId("timer-project").value, "");
   }
 
   function diagnosticValues() {
@@ -407,7 +545,9 @@
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("timer-toggle").onclick = toggleTimer;
+    byId("timer-save").onclick = stopAndSaveTimer;
     byId("timer-reset").onclick = resetTimer;
+    byId("timer-project").onchange = changeTimerProject;
     document.addEventListener("visibilitychange", function () {
       if (!document.hidden) {
         renderTimer();
@@ -468,11 +608,14 @@
     });
     renderRecords();
     renderTimer();
+    renderTimerAssignment(data.timer);
     renderDiagnostics();
     bindEvents();
     startTimerRefresh();
 
-    if (storageStatus.available) {
+    if (storageStatus.available && data.timer) {
+      setNotice("success", "Recovered your " + data.timer.status + " timer from this device.");
+    } else if (storageStatus.available) {
       setNotice("success", "Compatibility check passed. JavaScript and local storage are working.");
     } else {
       setNotice("error", "The app loaded, but local storage is unavailable: " + storageStatus.message);

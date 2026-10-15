@@ -37,7 +37,7 @@ function run() {
 
   assert.strictEqual(repository.checkAvailability().available, true);
   data = repository.load();
-  assert.strictEqual(data.schemaVersion, 3);
+  assert.strictEqual(data.schemaVersion, 4);
   assert.strictEqual(data.records.length, 0);
   assert.strictEqual(data.timer, null);
   assert.strictEqual(data.projects.length, 0);
@@ -67,7 +67,7 @@ function run() {
   }, /unsupported format/);
 
   assert.strictEqual(module.validateData(module.createEmptyData()), true);
-  assert.strictEqual(module.validateData({ schemaVersion: 3, records: [{}], timer: null, projects: [], tasks: [], timeEntries: [], settings: {}, metadata: {} }), false);
+  assert.strictEqual(module.validateData({ schemaVersion: 4, records: [{}], timer: null, projects: [], tasks: [], timeEntries: [], settings: {}, metadata: {} }), false);
 
   storage.setItem(module.storageKey, JSON.stringify({
     schemaVersion: 1,
@@ -75,7 +75,7 @@ function run() {
     metadata: { createdAt: null, updatedAt: null }
   }));
   loaded = repository.load();
-  assert.strictEqual(loaded.schemaVersion, 3);
+  assert.strictEqual(loaded.schemaVersion, 4);
   assert.strictEqual(loaded.records[0].note, "Keep me");
   assert.strictEqual(loaded.timer, null);
 
@@ -86,7 +86,7 @@ function run() {
     metadata: { createdAt: "2026-10-15T20:00:00.000Z", updatedAt: "2026-10-15T20:01:05.000Z" }
   }));
   loaded = repository.load();
-  assert.strictEqual(loaded.schemaVersion, 3);
+  assert.strictEqual(loaded.schemaVersion, 4);
   assert.strictEqual(loaded.records[0].note, "Keep timer data");
   assert.strictEqual(loaded.timer.elapsedMs, 65000);
   assert.strictEqual(loaded.projects.length, 0);
@@ -102,12 +102,29 @@ function run() {
   });
   data.timeEntries.push({
     id: "entry-1", date: "2026-10-16", projectId: "project-1", taskId: "task-1",
-    durationMinutes: 90, description: "Work", billable: true,
+    durationSeconds: 5400, description: "Work", billable: true,
     createdAt: "2026-10-16T08:00:00.000Z", updatedAt: "2026-10-16T08:00:00.000Z"
   });
   assert.strictEqual(module.validateData(data), true);
   data.tasks[0].projectId = "missing-project";
   assert.strictEqual(module.validateData(data), false);
+
+  storage.setItem(module.storageKey, JSON.stringify({
+    schemaVersion: 3,
+    records: [],
+    timer: { status: "paused", startedAtMs: null, elapsedMs: 17000, updatedAtMs: 100000 },
+    projects: [{ id: "p1", name: "Project", color: "#3b8fc2", archived: false, createdAt: "2026-10-16T08:00:00.000Z", updatedAt: "2026-10-16T08:00:00.000Z" }],
+    tasks: [],
+    timeEntries: [{ id: "e1", date: "2026-10-16", projectId: "p1", taskId: null, durationMinutes: 90, description: "Old entry", billable: true, createdAt: "2026-10-16T08:00:00.000Z", updatedAt: "2026-10-16T08:00:00.000Z" }],
+    settings: { selectedDate: "2026-10-16" },
+    metadata: { createdAt: null, updatedAt: null }
+  }));
+  loaded = repository.load();
+  assert.strictEqual(loaded.schemaVersion, 4);
+  assert.strictEqual(loaded.timeEntries[0].durationSeconds, 5400);
+  assert.strictEqual(typeof loaded.timeEntries[0].durationMinutes, "undefined");
+  assert.strictEqual(loaded.timer.projectId, null);
+  assert.strictEqual(loaded.timer.description, "");
   console.log("Storage tests passed.");
 }
 

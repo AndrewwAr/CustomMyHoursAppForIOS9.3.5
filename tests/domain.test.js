@@ -26,6 +26,11 @@ assert.strictEqual(domain.parseDuration("24", "1").valid, false);
 assert.strictEqual(domain.parseDuration("1.5", "0").valid, false);
 assert.strictEqual(domain.formatDuration(0), "0h 00m");
 assert.strictEqual(domain.formatDuration(125), "2h 05m");
+assert.strictEqual(domain.parseDurationSeconds("0", "0", "17").seconds, 17);
+assert.strictEqual(domain.parseDurationSeconds("1", "2", "3").seconds, 3723);
+assert.strictEqual(domain.parseDurationSeconds("24", "0", "1").valid, false);
+assert.strictEqual(domain.formatDurationSeconds(3723), "1h 02m 03s");
+assert.strictEqual(domain.formatDurationSeconds(3600), "1h 00m");
 
 projects = [
   { id: "p1", name: "Alpha", archived: false },
@@ -37,18 +42,27 @@ tasks = [
   { id: "t3", projectId: "p2", name: "Other", archived: false }
 ];
 entries = [
-  { id: "e1", date: "2026-10-16", durationMinutes: 30, createdAt: "2026-10-16T08:00:00Z" },
-  { id: "e2", date: "2026-10-16", durationMinutes: 75, createdAt: "2026-10-16T09:00:00Z" },
-  { id: "e3", date: "2026-10-15", durationMinutes: 60, createdAt: "2026-10-15T08:00:00Z" }
+  { id: "e1", date: "2026-10-16", durationSeconds: 1800, createdAt: "2026-10-16T08:00:00Z" },
+  { id: "e2", date: "2026-10-16", durationSeconds: 4500, createdAt: "2026-10-16T09:00:00Z" },
+  { id: "e3", date: "2026-10-15", durationSeconds: 3600, createdAt: "2026-10-15T08:00:00Z" }
 ];
 
 assert.strictEqual(domain.activeProjects(projects).length, 1);
 assert.strictEqual(domain.tasksForProject(tasks, "p1", "").length, 1);
 assert.strictEqual(domain.tasksForProject(tasks, "p1", "t2").length, 2);
 assert.strictEqual(domain.entriesForDate(entries, "2026-10-16")[0].id, "e2");
-assert.strictEqual(domain.totalForDate(entries, "2026-10-16"), 105);
+assert.strictEqual(domain.totalForDate(entries, "2026-10-16"), 6300);
 assert.strictEqual(domain.hasDuplicateName(projects, " alpha ", undefined, ""), true);
 assert.strictEqual(domain.hasDuplicateName(tasks, "build", "p1", ""), true);
 assert.strictEqual(domain.hasDuplicateName(tasks, "build", "p2", ""), false);
+
+assert.deepStrictEqual(JSON.parse(JSON.stringify(domain.createTimerEntry({
+  projectId: "p1", taskId: "t1", description: "Timed work", billable: true,
+  startedDate: "2026-10-16"
+}, 17234, "2026-10-16T10:00:00.000Z", "timer-entry", "2026-10-17"))), {
+  id: "timer-entry", date: "2026-10-16", projectId: "p1", taskId: "t1",
+  durationSeconds: 17, description: "Timed work", billable: true,
+  createdAt: "2026-10-16T10:00:00.000Z", updatedAt: "2026-10-16T10:00:00.000Z"
+});
 
 console.log("Domain tests passed.");
