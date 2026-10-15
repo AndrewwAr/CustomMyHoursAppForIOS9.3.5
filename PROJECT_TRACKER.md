@@ -108,6 +108,8 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [ ] Import a JSON backup with validation and confirmation.
 - [ ] Restore data atomically without losing the current copy on failure.
 - [ ] Export time entries as a CSV file for sharing or archiving.
+- [x] Provide a selectable copy fallback for iOS 9 Safari, which cannot reliably
+  download Blob URLs.
 - [ ] Add backup, restore, and CSV tests.
 - [ ] Complete interactive desktop browser verification.
 - [x] Deploy Phase 5 version 5.0.0 to GitHub Pages.

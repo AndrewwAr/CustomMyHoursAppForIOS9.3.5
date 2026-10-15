@@ -7,12 +7,15 @@
     var blob;
     var url;
     var link;
-    if (!root.Blob || !root.URL || !root.URL.createObjectURL) {
-      byId("backup-output").value = content;
-      byId("backup-output").className = "diagnostic-output";
-      notice("Download is unavailable; the backup text is selected below for manual copying.", "info");
-      byId("backup-output").focus();
-      byId("backup-output").select();
+    byId("backup-output").value = content;
+    byId("backup-output").className = "diagnostic-output";
+    byId("backup-help").className = "action-status";
+    byId("backup-help").textContent = "On this iPad, select and copy this text into Notes or email. Keep the complete text unchanged for restore.";
+    byId("backup-copy").className = "button";
+    byId("backup-output").focus();
+    byId("backup-output").select();
+    if (!root.Blob || !root.URL || !root.URL.createObjectURL || /OS 9_/.test(root.navigator.userAgent || "")) {
+      notice("The export text is selected below for copying on this iPad.", "info");
       return;
     }
     blob = new root.Blob([content], { type: mime });
@@ -54,11 +57,19 @@
     };
     reader.readAsText(file);
   }
+  function copyExport() {
+    var copied = false;
+    byId("backup-output").focus();
+    byId("backup-output").select();
+    try { copied = document.execCommand("copy"); } catch (error) { copied = false; }
+    notice(copied ? "Export text copied." : "Text is selected; use Copy from the Safari menu.", copied ? "success" : "info");
+  }
   function init(options) {
     state = options;
     byId("backup-json").onclick = exportJson;
     byId("backup-csv").onclick = exportCsv;
     byId("backup-file").onchange = importJson;
+    byId("backup-copy").onclick = copyExport;
   }
   root.MHBackup = { init: init };
 }(this, document));

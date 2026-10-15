@@ -15,8 +15,9 @@ Phase 5 adds local JSON backup, restore, and CSV export.
 
 ## Phase 5 physical iPad test
 
-1. Open **Diagnostics** and export a JSON backup.
-2. Export CSV and confirm the generated file contains the time-entry columns.
+1. Open **Diagnostics** and export a JSON backup. On iOS 9, copy the selected
+   text into Notes or email; desktop browsers may download the file directly.
+2. Export CSV and confirm the generated text contains the time-entry columns.
 3. Add a new note or entry, then import the JSON backup and confirm the prior
    data is restored.
 4. Try importing an invalid text file and confirm it is rejected without
