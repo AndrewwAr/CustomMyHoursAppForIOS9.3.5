@@ -76,8 +76,10 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [x] Support the stop, select another assignment, and restart workflow.
 - [x] Add automated migration, timer metadata, and timer-to-entry tests.
 - [x] Complete interactive desktop browser verification.
-- [ ] Deploy Phase 3 to GitHub Pages.
+- [x] Deploy Phase 3 version 3.0.0 to GitHub Pages.
 - [ ] Complete the Phase 3 physical iPad checklist.
+
+Deployment commit: `b73c23e`
 
 Deployment commit: `7c2e5b2`
 
