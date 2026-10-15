@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=3.0.0">
+    <link rel="stylesheet" href="css/app.css?v=4.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,13 +30,14 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v3.0.0</span>
+      <span id="version-label" class="version-label">v4.0.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
       <button id="nav-today" class="nav-button is-active" type="button">Today</button>
       <button id="nav-projects" class="nav-button" type="button">Projects</button>
       <button id="nav-timer" class="nav-button" type="button">Timer</button>
+      <button id="nav-week" class="nav-button" type="button">Week</button>
       <button id="nav-records" class="nav-button" type="button">Storage test</button>
       <button id="nav-diagnostics" class="nav-button" type="button">Diagnostics</button>
     </nav>
@@ -120,6 +121,29 @@
             <li>Restore it and confirm it is selectable again.</li>
           </ol>
         </div>
+      </section>
+
+      <section id="week-view" class="view-panel is-hidden" aria-labelledby="week-heading">
+        <div class="panel">
+          <div class="panel-heading-row"><h2 id="week-heading">Week: <span id="week-range"></span></h2><span id="week-total" class="total-badge">0h 00m</span></div>
+          <div class="button-row week-navigation">
+            <button id="week-previous" class="button" type="button">Previous week</button>
+            <button id="week-current" class="button" type="button">Current week</button>
+            <button id="week-next" class="button" type="button">Next week</button>
+          </div>
+          <div class="field-row two-columns">
+            <div class="field-column"><label for="week-project-filter">Project</label><select id="week-project-filter"></select></div>
+            <div class="field-column"><label for="week-billable-filter">Billing</label><select id="week-billable-filter"><option value="">All entries</option><option value="true">Billable</option><option value="false">Non-billable</option></select></div>
+          </div>
+          <div class="week-days">
+            <span id="week-day-0"></span><span id="week-day-1"></span><span id="week-day-2"></span><span id="week-day-3"></span><span id="week-day-4"></span><span id="week-day-5"></span><span id="week-day-6"></span>
+          </div>
+          <h3>Totals by project and task</h3>
+          <ul id="week-summary" class="week-summary"></ul>
+          <h3>Time entries</h3>
+          <ul id="week-list" class="entry-list"></ul>
+        </div>
+        <div class="panel test-checklist"><h2>Phase 4 iPad test</h2><ol><li>Verify all seven daily totals and the weekly total.</li><li>Move to previous and next weeks, then return to the current week.</li><li>Filter by project and billable status.</li><li>Tap Edit on a weekly entry, save it in Today, and confirm the weekly totals update.</li></ol></div>
       </section>
 
       <section id="projects-view" class="view-panel is-hidden" aria-labelledby="projects-heading">
@@ -283,10 +307,11 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=3.0.0"></script>
-    <script src="js/timer.js?v=3.0.0"></script>
-    <script src="js/domain.js?v=3.0.0"></script>
-    <script src="js/product.js?v=3.0.0"></script>
-    <script src="js/app.js?v=3.0.0"></script>
+    <script src="js/storage.js?v=4.0.0"></script>
+    <script src="js/timer.js?v=4.0.0"></script>
+    <script src="js/domain.js?v=4.0.0"></script>
+    <script src="js/product.js?v=4.0.0"></script>
+    <script src="js/weekly.js?v=4.0.0"></script>
+    <script src="js/app.js?v=4.0.0"></script>
   </body>
 </html>

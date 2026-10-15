@@ -10,7 +10,7 @@ Last updated: 2026-10-16
 | Phase 1.5 — persistent timer proof | Complete | Passed |
 | Phase 2 — manual time-entry MVP | Complete | Passed |
 | Phase 3 — timer-to-time-entry workflow | Complete | Passed |
-| Phase 4 — weekly timesheet and reporting | Not started | Not tested |
+| Phase 4 — weekly timesheet and reporting | In progress | Not tested |
 | Phase 5 — backup, restore, and export | Not started | Not tested |
 | Phase 6 — product hardening | Not started | Not tested |
 
@@ -84,6 +84,19 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 Deployment commit: `b73c23e`
 
 Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
+
+## Phase 4 implementation
+
+- [x] Add previous, current, and next week navigation.
+- [x] Show entries for the selected week with exact durations.
+- [x] Show seven daily totals and the combined weekly total.
+- [x] Group weekly totals by project and task.
+- [x] Filter the week by project and billing status.
+- [x] Open a weekly entry directly in the existing edit form.
+- [x] Add date and weekly aggregation tests.
+- [x] Complete interactive desktop browser verification.
+- [ ] Deploy Phase 4 version 4.0.0 to GitHub Pages.
+- [ ] Complete the Phase 4 physical iPad checklist.
 
 ## Working agreement
 

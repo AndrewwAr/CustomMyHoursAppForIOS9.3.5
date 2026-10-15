@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "3.0.0-phase3";
+  var APP_VERSION = "4.0.0-phase4";
   var repository;
   var data;
   var storageStatus;
@@ -179,7 +179,7 @@
   }
 
   function setActiveView(name) {
-    var names = ["today", "projects", "timer", "records", "diagnostics"];
+    var names = ["today", "projects", "timer", "week", "records", "diagnostics"];
     var index;
 
     for (index = 0; index < names.length; index += 1) {
@@ -197,6 +197,8 @@
     } else if (name === "timer") {
       renderTimer();
       renderTimerAssignment(data.timer);
+    } else if (name === "week") {
+      window.MHWeekly.render();
     } else if (name === "today" || name === "projects") {
       window.MHProduct.renderAll();
     }
@@ -539,6 +541,9 @@
     byId("nav-timer").onclick = function () {
       setActiveView("timer");
     };
+    byId("nav-week").onclick = function () {
+      setActiveView("week");
+    };
     byId("nav-diagnostics").onclick = function () {
       setActiveView("diagnostics");
     };
@@ -566,7 +571,7 @@
   function boot() {
     var browserStorage;
 
-    if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct) {
+    if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
       return;
     }
@@ -605,6 +610,15 @@
       storageStatus: storageStatus,
       domain: window.MHDomain,
       notify: setNotice
+    });
+    window.MHWeekly.init({
+      data: data,
+      repository: repository,
+      domain: window.MHDomain,
+      editEntry: function (id) {
+        window.MHProduct.editEntry(id);
+        setActiveView("today");
+      }
     });
     renderRecords();
     renderTimer();

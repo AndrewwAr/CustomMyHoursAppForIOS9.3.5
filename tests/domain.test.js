@@ -31,6 +31,9 @@ assert.strictEqual(domain.parseDurationSeconds("1", "2", "3").seconds, 3723);
 assert.strictEqual(domain.parseDurationSeconds("24", "0", "1").valid, false);
 assert.strictEqual(domain.formatDurationSeconds(3723), "1h 02m 03s");
 assert.strictEqual(domain.formatDurationSeconds(3600), "1h 00m");
+assert.strictEqual(domain.startOfWeek("2026-10-16"), "2026-10-12");
+assert.strictEqual(domain.startOfWeek("2026-10-18"), "2026-10-12");
+assert.strictEqual(domain.addDays("2026-10-31", 1), "2026-11-01");
 
 projects = [
   { id: "p1", name: "Alpha", archived: false },
@@ -52,6 +55,8 @@ assert.strictEqual(domain.tasksForProject(tasks, "p1", "").length, 1);
 assert.strictEqual(domain.tasksForProject(tasks, "p1", "t2").length, 2);
 assert.strictEqual(domain.entriesForDate(entries, "2026-10-16")[0].id, "e2");
 assert.strictEqual(domain.totalForDate(entries, "2026-10-16"), 6300);
+assert.strictEqual(domain.sumDurationSeconds(entries), 9900);
+assert.strictEqual(JSON.stringify(domain.dailyTotals(entries, "2026-10-15", 2)), JSON.stringify([3600, 6300]));
 assert.strictEqual(domain.hasDuplicateName(projects, " alpha ", undefined, ""), true);
 assert.strictEqual(domain.hasDuplicateName(tasks, "build", "p1", ""), true);
 assert.strictEqual(domain.hasDuplicateName(tasks, "build", "p2", ""), false);

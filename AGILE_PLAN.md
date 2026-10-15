@@ -131,6 +131,8 @@ stop the timer with the correct elapsed time.
 
 ## Phase 4 — Weekly workflow and reporting
 
+Implementation status: in progress for version 4.0.0.
+
 ### User outcome
 
 The user can review and maintain an entire week efficiently.

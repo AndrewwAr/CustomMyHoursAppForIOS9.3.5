@@ -548,6 +548,37 @@ label {
   min-width: 180px !important;
 }
 
+.week-navigation {
+  margin-bottom: 18px;
+}
+
+.week-days {
+  margin: 0 0 18px;
+  overflow: hidden;
+}
+
+.week-days span {
+  display: block;
+  float: left;
+  width: 50%;
+  padding: 7px 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #dce4e8;
+}
+
+.week-entry .button {
+  margin-top: 8px;
+}
+
+.week-summary {
+  margin: 0 0 20px;
+  padding-left: 22px;
+}
+
+.week-summary li {
+  margin: 7px 0;
+}
+
 .button[disabled] {
   border-color: #c8d0d4;
   background: #e8edef;

@@ -9,7 +9,8 @@ Phase 1 proves that the deployed application starts and that Safari can persist
 records locally. Phase 1.5 adds a persistent stopwatch to verify accurate timing
 across reloads, Safari backgrounding, and device sleep before full time-tracking
 features are introduced. Phase 2 adds manual time tracking. Phase 3 connects the
-persistent timer to projects, tasks, and exact-second time entries.
+persistent timer to projects, tasks, and exact-second time entries. Phase 4 adds
+weekly navigation, daily totals, filters, and edit access from the weekly view.
 
 ## Run locally
 
@@ -89,6 +90,15 @@ hostname will make the old data unavailable at the new address.
 5. Open **Today** and verify the entry includes the exact elapsed seconds.
 6. Start another timer, cancel it, and verify no time entry is created.
 7. Stop a timer, select another project/task, and start the next timer.
+
+## Phase 4 physical iPad test
+
+1. Open **Week** and verify the date range, seven daily totals, grouped totals,
+   and weekly total.
+2. Use Previous week, Next week, and Current week.
+3. Filter by project, billable, and non-billable entries.
+4. Tap **Edit** on a weekly entry, save it in Today, then return to Week and
+   verify the totals changed.
 
 Data is stored only in Safari's local storage. Clearing Safari history and
 website data removes it. Backup and restore are scheduled for Phase 5.

@@ -13,6 +13,41 @@
     return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
   }
 
+  function dateFromKey(value) {
+    var parts = value.split("-");
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  }
+
+  function addDays(value, amount) {
+    var date = dateFromKey(value);
+    date.setDate(date.getDate() + amount);
+    return dateKey(date);
+  }
+
+  function startOfWeek(value) {
+    var date = dateFromKey(value);
+    var day = date.getDay();
+    return addDays(value, day === 0 ? -6 : 1 - day);
+  }
+
+  function sumDurationSeconds(entries) {
+    var total = 0;
+    var index;
+    for (index = 0; index < entries.length; index += 1) { total += entries[index].durationSeconds; }
+    return total;
+  }
+
+  function dailyTotals(entries, start, count) {
+    var totals = [];
+    var index;
+    var day;
+    for (index = 0; index < count; index += 1) {
+      day = addDays(start, index);
+      totals.push(totalForDate(entries, day));
+    }
+    return totals;
+  }
+
   function isValidDateKey(value) {
     var parts;
     var date;
@@ -160,6 +195,10 @@
   root.MHDomain = {
     trim: trim,
     dateKey: dateKey,
+    addDays: addDays,
+    startOfWeek: startOfWeek,
+    sumDurationSeconds: sumDurationSeconds,
+    dailyTotals: dailyTotals,
     isValidDateKey: isValidDateKey,
     parseDuration: parseDuration,
     parseDurationSeconds: parseDurationSeconds,

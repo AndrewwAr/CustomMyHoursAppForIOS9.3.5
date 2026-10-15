@@ -616,6 +616,7 @@
 
   root.MHProduct = {
     init: init,
-    renderAll: renderAll
+    renderAll: renderAll,
+    editEntry: editEntry
   };
 }(this, document));
