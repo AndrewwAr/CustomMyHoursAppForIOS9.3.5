@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "4.0.0-phase4";
+  var APP_VERSION = "5.0.0-phase5";
   var repository;
   var data;
   var storageStatus;
@@ -571,7 +571,7 @@
   function boot() {
     var browserStorage;
 
-    if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly) {
+    if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly || !window.MHBackup) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
       return;
     }
@@ -618,6 +618,20 @@
       editEntry: function (id) {
         window.MHProduct.editEntry(id);
         setActiveView("today");
+      }
+    });
+    window.MHBackup.init({
+      data: data,
+      repository: repository,
+      domain: window.MHDomain,
+      notify: setNotice,
+      replaceData: function (nextData) {
+        data = nextData;
+        window.MHProduct.replaceData(nextData);
+        window.MHWeekly.render();
+        renderRecords();
+        renderTimer();
+        renderDiagnostics();
       }
     });
     renderRecords();

@@ -617,6 +617,7 @@
   root.MHProduct = {
     init: init,
     renderAll: renderAll,
-    editEntry: editEntry
+    editEntry: editEntry,
+    replaceData: function (nextData) { state.data = nextData; renderAll(); }
   };
 }(this, document));

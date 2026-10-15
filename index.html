@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=4.0.0">
+    <link rel="stylesheet" href="css/app.css?v=5.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,7 +30,7 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v4.0.0</span>
+      <span id="version-label" class="version-label">v5.0.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
@@ -296,6 +296,16 @@
             <button id="refresh-diagnostics" class="button" type="button">Refresh report</button>
             <button id="copy-diagnostics" class="button button-primary" type="button">Copy report</button>
           </div>
+          <h3>Backup and export</h3>
+          <p class="intro-copy">All data stays on this device. Export a backup before clearing Safari data or moving to another device.</p>
+          <div class="button-row">
+            <button id="backup-json" class="button button-primary" type="button">Export JSON backup</button>
+            <button id="backup-csv" class="button" type="button">Export CSV</button>
+            <label class="button" for="backup-file">Import JSON backup</label>
+            <input id="backup-file" class="is-hidden" type="file" accept="application/json,.json">
+          </div>
+          <div id="backup-download"></div>
+          <textarea id="backup-output" class="diagnostic-output is-hidden" readonly></textarea>
           <p id="copy-status" class="action-status" role="status"></p>
           <label id="diagnostic-output-label" class="is-hidden" for="diagnostic-output">If copying is unavailable, select and copy this text:</label>
           <textarea id="diagnostic-output" class="diagnostic-output is-hidden" readonly></textarea>
@@ -307,11 +317,12 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=4.0.0"></script>
-    <script src="js/timer.js?v=4.0.0"></script>
-    <script src="js/domain.js?v=4.0.0"></script>
-    <script src="js/product.js?v=4.0.0"></script>
-    <script src="js/weekly.js?v=4.0.0"></script>
-    <script src="js/app.js?v=4.0.0"></script>
+    <script src="js/storage.js?v=5.0.0"></script>
+    <script src="js/timer.js?v=5.0.0"></script>
+    <script src="js/domain.js?v=5.0.0"></script>
+    <script src="js/product.js?v=5.0.0"></script>
+    <script src="js/weekly.js?v=5.0.0"></script>
+    <script src="js/backup.js?v=5.0.0"></script>
+    <script src="js/app.js?v=5.0.0"></script>
   </body>
 </html>

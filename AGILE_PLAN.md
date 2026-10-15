@@ -156,6 +156,8 @@ The user can review and maintain an entire week efficiently.
 
 ## Phase 5 — Backup, restore, and export
 
+Implementation status: in progress for version 5.0.0.
+
 ### User outcome
 
 The user can recover data if Safari storage is cleared or the iPad is replaced.

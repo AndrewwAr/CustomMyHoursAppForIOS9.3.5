@@ -10,8 +10,8 @@ Last updated: 2026-10-16
 | Phase 1.5 — persistent timer proof | Complete | Passed |
 | Phase 2 — manual time-entry MVP | Complete | Passed |
 | Phase 3 — timer-to-time-entry workflow | Complete | Passed |
-| Phase 4 — weekly timesheet and reporting | In progress | Not tested |
-| Phase 5 — backup, restore, and export | Not started | Not tested |
+| Phase 4 — weekly timesheet and reporting | Complete | Passed |
+| Phase 5 — backup, restore, and export | In progress | Not tested |
 | Phase 6 — product hardening | Not started | Not tested |
 
 ## Completed work
@@ -96,9 +96,22 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [x] Add date and weekly aggregation tests.
 - [x] Complete interactive desktop browser verification.
 - [x] Deploy Phase 4 version 4.0.0 to GitHub Pages.
-- [ ] Complete the Phase 4 physical iPad checklist.
+- [x] Complete the Phase 4 physical iPad checklist.
 
 Deployment commit: `5003118`
+
+Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
+
+## Phase 5 implementation
+
+- [ ] Export all local data as a JSON backup.
+- [ ] Import a JSON backup with validation and confirmation.
+- [ ] Restore data atomically without losing the current copy on failure.
+- [ ] Export time entries as a CSV file for sharing or archiving.
+- [ ] Add backup, restore, and CSV tests.
+- [ ] Complete interactive desktop browser verification.
+- [ ] Deploy Phase 5 version 5.0.0 to GitHub Pages.
+- [ ] Complete the Phase 5 physical iPad checklist.
 
 ## Working agreement
 
