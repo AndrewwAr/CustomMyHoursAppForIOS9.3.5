@@ -49,7 +49,7 @@
       try { imported = JSON.parse(reader.result); } catch (error) { notice("The backup is not valid JSON.", "error"); return; }
       if (!root.MHStorage.validateData(imported)) { notice("The backup format is not supported or is incomplete.", "error"); return; }
       if (!root.confirm("Restore this backup? Current local data will be replaced.")) { return; }
-      try { state.repository.save(imported); state.replaceData(imported); notice("Backup restored successfully."); }
+      try { state.repository.save(imported); state.data = imported; state.replaceData(imported); notice("Backup restored successfully."); }
       catch (saveError) { notice(saveError.message, "error"); }
     };
     reader.readAsText(file);
