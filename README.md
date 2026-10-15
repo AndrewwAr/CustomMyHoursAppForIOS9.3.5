@@ -6,7 +6,9 @@ and ECMAScript 5 JavaScript. It has no runtime dependencies and does not connect
 to the My Hours service.
 
 Phase 1 proves that the deployed application starts and that Safari can persist
-records locally before the time-tracking features are introduced.
+records locally. Phase 1.5 adds a persistent stopwatch to verify accurate timing
+across reloads, Safari backgrounding, and device sleep before full time-tracking
+features are introduced.
 
 ## Run locally
 
@@ -51,6 +53,16 @@ hostname will make the old data unavailable at the new address.
 5. Rotate the iPad and test portrait and landscape.
 6. Open Diagnostics and copy the report if anything fails.
 7. Restart the iPad and confirm the note remains.
+
+## Phase 1.5 physical iPad timer test
+
+1. Open **Timer test** and start the timer.
+2. Press Home, wait one minute, return, and verify the elapsed time advanced.
+3. Lock the iPad, wait one minute, unlock it, and verify the elapsed time advanced.
+4. Refresh while the timer is running and verify that it continues.
+5. Close Safari, reopen the page, and verify that the timer continues.
+6. Pause the timer and verify that it stops increasing.
+7. Resume it, verify that it continues from the saved value, and then reset it.
 
 Data is stored only in Safari's local storage. Clearing Safari history and
 website data removes it. Backup and restore are scheduled for Phase 5.

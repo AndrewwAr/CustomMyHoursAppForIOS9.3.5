@@ -2,12 +2,13 @@
   "use strict";
 
   var STORAGE_KEY = "myhours-custom.phase1.data";
-  var SCHEMA_VERSION = 1;
+  var SCHEMA_VERSION = 2;
 
   function createEmptyData() {
     return {
       schemaVersion: SCHEMA_VERSION,
       records: [],
+      timer: null,
       metadata: {
         createdAt: null,
         updatedAt: null
@@ -22,21 +23,60 @@
       typeof record.createdAt === "string";
   }
 
-  function validateData(data) {
+  function validateRecords(records) {
     var index;
 
-    if (!data || data.schemaVersion !== SCHEMA_VERSION || !data.records ||
-        Object.prototype.toString.call(data.records) !== "[object Array]") {
+    if (!records || Object.prototype.toString.call(records) !== "[object Array]") {
       return false;
     }
 
-    for (index = 0; index < data.records.length; index += 1) {
-      if (!isValidRecord(data.records[index])) {
+    for (index = 0; index < records.length; index += 1) {
+      if (!isValidRecord(records[index])) {
         return false;
       }
     }
 
     return true;
+  }
+
+  function isValidTimer(timer) {
+    if (timer === null) {
+      return true;
+    }
+
+    if (!timer || (timer.status !== "running" && timer.status !== "paused") ||
+        typeof timer.elapsedMs !== "number" || timer.elapsedMs < 0 ||
+        typeof timer.updatedAtMs !== "number") {
+      return false;
+    }
+
+    if (timer.status === "running") {
+      return typeof timer.startedAtMs === "number";
+    }
+
+    return timer.startedAtMs === null;
+  }
+
+  function validateData(data) {
+    return !!data && data.schemaVersion === SCHEMA_VERSION &&
+      validateRecords(data.records) && isValidTimer(data.timer) &&
+      !!data.metadata && typeof data.metadata === "object";
+  }
+
+  function migrateData(data) {
+    if (data && data.schemaVersion === 1 && validateRecords(data.records)) {
+      return {
+        schemaVersion: SCHEMA_VERSION,
+        records: data.records,
+        timer: null,
+        metadata: data.metadata && typeof data.metadata === "object" ? data.metadata : {
+          createdAt: null,
+          updatedAt: null
+        }
+      };
+    }
+
+    return data;
   }
 
   function StorageRepository(storage) {
@@ -78,6 +118,8 @@
       throw new Error("Stored data is not valid JSON. It was left unchanged.");
     }
 
+    parsed = migrateData(parsed);
+
     if (!validateData(parsed)) {
       throw new Error("Stored data has an unsupported format. It was left unchanged.");
     }
@@ -113,6 +155,7 @@
     StorageRepository: StorageRepository,
     createEmptyData: createEmptyData,
     validateData: validateData,
+    migrateData: migrateData,
     schemaVersion: SCHEMA_VERSION,
     storageKey: STORAGE_KEY
   };

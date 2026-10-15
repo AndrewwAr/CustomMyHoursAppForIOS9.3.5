@@ -37,8 +37,9 @@ function run() {
 
   assert.strictEqual(repository.checkAvailability().available, true);
   data = repository.load();
-  assert.strictEqual(data.schemaVersion, 1);
+  assert.strictEqual(data.schemaVersion, 2);
   assert.strictEqual(data.records.length, 0);
+  assert.strictEqual(data.timer, null);
 
   data.records.push({
     id: "note-1",
@@ -62,8 +63,18 @@ function run() {
     repository.load();
   }, /unsupported format/);
 
-  assert.strictEqual(module.validateData({ schemaVersion: 1, records: [] }), true);
-  assert.strictEqual(module.validateData({ schemaVersion: 1, records: [{}] }), false);
+  assert.strictEqual(module.validateData(module.createEmptyData()), true);
+  assert.strictEqual(module.validateData({ schemaVersion: 2, records: [{}], timer: null, metadata: {} }), false);
+
+  storage.setItem(module.storageKey, JSON.stringify({
+    schemaVersion: 1,
+    records: [{ id: "old-note", note: "Keep me", createdAt: "2026-10-15T20:00:00.000Z" }],
+    metadata: { createdAt: null, updatedAt: null }
+  }));
+  loaded = repository.load();
+  assert.strictEqual(loaded.schemaVersion, 2);
+  assert.strictEqual(loaded.records[0].note, "Keep me");
+  assert.strictEqual(loaded.timer, null);
   console.log("Storage tests passed.");
 }
 

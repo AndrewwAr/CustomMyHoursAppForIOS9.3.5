@@ -71,6 +71,11 @@ WebKit, storage, HTTPS, layout, or keyboard issue first.
 
 ## Phase 2 — Manual time-entry MVP
 
+Before Phase 2, Phase 1.5 validates a persistent stopwatch on the physical iPad.
+The test timer must count from saved timestamps, recover across reloads, Safari
+backgrounding and device sleep, pause without advancing, resume from its saved
+elapsed time, and reset safely without losing Phase 1 notes.
+
 ### User outcome
 
 The application is useful for basic daily time tracking without a live timer.

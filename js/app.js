@@ -1,11 +1,12 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "1.0.0-phase1";
+  var APP_VERSION = "1.1.0-phase1.5";
   var repository;
   var data;
   var storageStatus;
   var bootTime = new Date();
+  var timerRefreshId = null;
 
   function byId(id) {
     return document.getElementById(id);
@@ -179,21 +180,128 @@
 
   function setActiveView(name) {
     var recordsView = byId("records-view");
+    var timerView = byId("timer-view");
     var diagnosticsView = byId("diagnostics-view");
     var recordsButton = byId("nav-records");
+    var timerButton = byId("nav-timer");
     var diagnosticsButton = byId("nav-diagnostics");
 
     if (name === "diagnostics") {
       hide(recordsView);
+      hide(timerView);
       show(diagnosticsView);
       recordsButton.className = "nav-button";
+      timerButton.className = "nav-button";
       diagnosticsButton.className = "nav-button is-active";
       renderDiagnostics();
+    } else if (name === "timer") {
+      hide(recordsView);
+      show(timerView);
+      hide(diagnosticsView);
+      recordsButton.className = "nav-button";
+      timerButton.className = "nav-button is-active";
+      diagnosticsButton.className = "nav-button";
+      renderTimer();
     } else {
       show(recordsView);
+      hide(timerView);
       hide(diagnosticsView);
       recordsButton.className = "nav-button is-active";
+      timerButton.className = "nav-button";
       diagnosticsButton.className = "nav-button";
+    }
+  }
+
+  function formatElapsed(milliseconds) {
+    var totalSeconds = Math.floor(Math.max(0, milliseconds) / 1000);
+    var hours = Math.floor(totalSeconds / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+
+    function pad(value) {
+      return value < 10 ? "0" + value : String(value);
+    }
+
+    return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+  }
+
+  function stopTimerRefresh() {
+    if (timerRefreshId !== null) {
+      window.clearInterval(timerRefreshId);
+      timerRefreshId = null;
+    }
+  }
+
+  function startTimerRefresh() {
+    stopTimerRefresh();
+    if (data.timer && data.timer.status === "running") {
+      timerRefreshId = window.setInterval(renderTimer, 250);
+    }
+  }
+
+  function renderTimer() {
+    var timer = data ? data.timer : null;
+    var elapsed = window.MHTimer.getElapsed(timer, new Date().getTime());
+    var toggle = byId("timer-toggle");
+    var reset = byId("timer-reset");
+
+    setText(byId("timer-display"), formatElapsed(elapsed));
+    setText(byId("timer-error"), "");
+
+    if (!timer) {
+      setText(byId("timer-state"), "Ready to start");
+      setText(toggle, "Start timer");
+      reset.disabled = true;
+    } else if (timer.status === "running") {
+      setText(byId("timer-state"), "Running - saved on this device");
+      setText(toggle, "Pause timer");
+      reset.disabled = false;
+    } else {
+      setText(byId("timer-state"), "Paused - elapsed time is saved");
+      setText(toggle, "Resume timer");
+      reset.disabled = false;
+    }
+  }
+
+  function saveTimerChange(nextTimer, successMessage) {
+    var previousTimer = data.timer;
+
+    data.timer = nextTimer;
+    try {
+      repository.save(data);
+      renderTimer();
+      startTimerRefresh();
+      setNotice("success", successMessage);
+    } catch (error) {
+      data.timer = previousTimer;
+      renderTimer();
+      setText(byId("timer-error"), error.message);
+      setNotice("error", error.message);
+    }
+  }
+
+  function toggleTimer() {
+    var now = new Date().getTime();
+
+    if (!storageStatus.available) {
+      setText(byId("timer-error"), "Local storage is unavailable. The timer cannot be started safely.");
+      return;
+    }
+
+    if (data.timer && data.timer.status === "running") {
+      saveTimerChange(window.MHTimer.pause(data.timer, now), "The timer was paused and saved.");
+    } else {
+      saveTimerChange(window.MHTimer.start(data.timer, now), "The timer is running and will survive reloads.");
+    }
+  }
+
+  function resetTimer() {
+    if (!data.timer) {
+      return;
+    }
+
+    if (window.confirm("Reset the timer to 00:00:00?")) {
+      saveTimerChange(null, "The timer was reset.");
     }
   }
 
@@ -216,6 +324,8 @@
       ["Schema version", window.MHStorage.schemaVersion],
       ["Saved records", data ? data.records.length : 0],
       ["Last saved", data && data.metadata.updatedAt ? data.metadata.updatedAt : "Never"],
+      ["Timer state", data && data.timer ? data.timer.status : "Not started"],
+      ["Timer elapsed", data && data.timer ? formatElapsed(window.MHTimer.getElapsed(data.timer, new Date().getTime())) : "00:00:00"],
       ["Startup errors", startupErrors.length ? JSON.stringify(startupErrors) : "None"]
     ];
   }
@@ -290,11 +400,26 @@
     byId("nav-records").onclick = function () {
       setActiveView("records");
     };
+    byId("nav-timer").onclick = function () {
+      setActiveView("timer");
+    };
     byId("nav-diagnostics").onclick = function () {
       setActiveView("diagnostics");
     };
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
+    byId("timer-toggle").onclick = toggleTimer;
+    byId("timer-reset").onclick = resetTimer;
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) {
+        renderTimer();
+        startTimerRefresh();
+      }
+    }, false);
+    window.addEventListener("pageshow", function () {
+      renderTimer();
+      startTimerRefresh();
+    }, false);
     window.onorientationchange = function () {
       window.setTimeout(renderDiagnostics, 200);
     };
@@ -303,8 +428,8 @@
   function boot() {
     var browserStorage;
 
-    if (!window.MHStorage) {
-      setNotice("error", "The storage component did not load. Check the network and reload.");
+    if (!window.MHStorage || !window.MHTimer) {
+      setNotice("error", "A required application component did not load. Check the network and reload.");
       return;
     }
 
@@ -337,8 +462,10 @@
 
     setText(byId("version-label"), "v" + APP_VERSION);
     renderRecords();
+    renderTimer();
     renderDiagnostics();
     bindEvents();
+    startTimerRefresh();
 
     if (storageStatus.available) {
       setNotice("success", "Compatibility check passed. JavaScript and local storage are working.");

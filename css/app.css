@@ -283,6 +283,50 @@ label {
   margin: 8px 0;
 }
 
+.timer-panel {
+  text-align: center;
+}
+
+.timer-panel h2,
+.timer-panel .intro-copy {
+  text-align: left;
+}
+
+.timer-display {
+  margin: 24px 0 8px;
+  color: #173c50;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 64px;
+  font-weight: bold;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+.timer-state {
+  min-height: 25px;
+  margin: 0 0 22px;
+  color: #60747f;
+}
+
+.timer-actions {
+  margin-bottom: 8px;
+}
+
+.timer-actions .button {
+  min-width: 130px;
+  margin: 0 5px 8px;
+}
+
+.timer-main-button {
+  min-width: 180px !important;
+}
+
+.button[disabled] {
+  border-color: #c8d0d4;
+  background: #e8edef;
+  color: #88979f;
+}
+
 .diagnostic-list {
   margin: 0 0 18px;
 }
@@ -356,5 +400,9 @@ label {
     position: static;
     width: 100%;
     margin-top: 9px;
+  }
+
+  .timer-display {
+    font-size: 45px;
   }
 }

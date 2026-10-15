@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=1.0.0">
+    <link rel="stylesheet" href="css/app.css?v=1.1.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,11 +30,12 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v1.0.0</span>
+      <span id="version-label" class="version-label">v1.1.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
       <button id="nav-records" class="nav-button is-active" type="button">Storage test</button>
+      <button id="nav-timer" class="nav-button" type="button">Timer test</button>
       <button id="nav-diagnostics" class="nav-button" type="button">Diagnostics</button>
     </nav>
 
@@ -82,6 +83,33 @@
         </div>
       </section>
 
+      <section id="timer-view" class="view-panel is-hidden" aria-labelledby="timer-heading">
+        <div class="panel timer-panel">
+          <h2 id="timer-heading">Persistent timer test</h2>
+          <p class="intro-copy">This stopwatch uses saved timestamps. It should continue accurately while Safari is closed, backgrounded, or the iPad is asleep.</p>
+          <div id="timer-display" class="timer-display" aria-live="off">00:00:00</div>
+          <p id="timer-state" class="timer-state">Ready to start</p>
+          <div class="timer-actions">
+            <button id="timer-toggle" class="button button-primary timer-main-button" type="button">Start timer</button>
+            <button id="timer-reset" class="button button-danger" type="button" disabled>Reset</button>
+          </div>
+          <p id="timer-error" class="field-error" role="alert"></p>
+        </div>
+
+        <div class="panel test-checklist">
+          <h2>Phase 1.5 iPad test</h2>
+          <ol>
+            <li>Start the timer and watch it count for at least 10 seconds.</li>
+            <li>Press the Home button, wait one minute, return, and check the elapsed time.</li>
+            <li>Lock the iPad, wait one minute, unlock it, and check the elapsed time.</li>
+            <li>Refresh the page while it is running and confirm that it continues.</li>
+            <li>Close Safari, reopen this page, and confirm that it continues.</li>
+            <li>Pause it, wait, and confirm that the displayed time does not increase.</li>
+            <li>Resume it, verify counting continues, then reset it.</li>
+          </ol>
+        </div>
+      </section>
+
       <section id="diagnostics-view" class="view-panel is-hidden" aria-labelledby="diagnostics-heading">
         <div class="panel">
           <h2 id="diagnostics-heading">Device diagnostics</h2>
@@ -102,7 +130,8 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=1.0.0"></script>
-    <script src="js/app.js?v=1.0.0"></script>
+    <script src="js/storage.js?v=1.1.0"></script>
+    <script src="js/timer.js?v=1.1.0"></script>
+    <script src="js/app.js?v=1.1.0"></script>
   </body>
 </html>
