@@ -58,7 +58,10 @@ Last updated: 2026-10-16
 - [x] Add automated domain, persistence, migration, DOM, and compatibility tests.
 - [x] Complete an interactive browser test covering create, edit, duplicate,
   delete, archive, restore, historical names, and recalculated daily totals.
-- [ ] Deploy Phase 2 and complete its physical iPad checklist.
+- [x] Deploy Phase 2 version 2.0.0 to GitHub Pages.
+- [ ] Complete the Phase 2 physical iPad checklist.
+
+Deployment commit: `7c2e5b2`
 
 ## Working agreement
 
