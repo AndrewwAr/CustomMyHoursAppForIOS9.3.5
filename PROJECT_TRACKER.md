@@ -61,6 +61,8 @@ Last updated: 2026-10-16
 - [x] Deploy Phase 2 version 2.0.0 to GitHub Pages.
 - [x] Complete the Phase 2 physical iPad checklist.
 
+Deployment commit: `7c2e5b2`
+
 Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 
 ## Phase 3 implementation
@@ -82,8 +84,6 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 Deployment commit: `b73c23e`
 
 Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
-
-Deployment commit: `7c2e5b2`
 
 ## Working agreement
 
