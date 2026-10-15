@@ -579,15 +579,13 @@ label {
   margin: 7px 0;
 }
 
-#backup-download,
-#backup-new-page {
+#backup-download {
   display: inline-block;
   margin: 0 8px 8px 0;
   vertical-align: top;
 }
 
-#backup-download .button,
-#backup-new-page .button {
+#backup-download .button {
   display: inline-block;
   margin: 0;
 }

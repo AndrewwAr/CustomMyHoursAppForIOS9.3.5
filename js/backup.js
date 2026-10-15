@@ -17,15 +17,6 @@
     if (!root.Blob || !root.URL || !root.URL.createObjectURL || /OS 9_/.test(root.navigator.userAgent || "")) {
       link = document.createElement("a");
       link.href = "data:" + mime + ";charset=utf-8," + encodeURIComponent(content);
-      link.target = "_blank";
-      link.textContent = "Open export in new page";
-      link.className = "button backup-download";
-      byId("backup-new-page").innerHTML = "";
-      byId("backup-new-page").style.display = "inline-block";
-      byId("backup-new-page").style.margin = "0 8px 8px 0";
-      byId("backup-new-page").appendChild(link);
-      link = document.createElement("a");
-      link.href = "data:" + mime + ";charset=utf-8," + encodeURIComponent(content);
       link.download = name;
       link.target = "_blank";
       link.textContent = "Download " + name;
@@ -39,17 +30,6 @@
     }
     blob = new root.Blob([content], { type: mime });
     url = root.URL.createObjectURL(blob);
-    link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "Open export in new page";
-    link.className = "button backup-download";
-    byId("backup-new-page").innerHTML = "";
-    byId("backup-new-page").style.display = "inline-block";
-    byId("backup-new-page").style.margin = "0 8px 8px 0";
-    byId("backup-new-page").style.verticalAlign = "top";
-    byId("backup-new-page").appendChild(link);
     link = document.createElement("a");
     link.href = url;
     link.download = name;
