@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=1.1.0">
+    <link rel="stylesheet" href="css/app.css?v=2.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,12 +30,14 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v1.1.0</span>
+      <span id="version-label" class="version-label">v2.0.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
-      <button id="nav-records" class="nav-button is-active" type="button">Storage test</button>
+      <button id="nav-today" class="nav-button is-active" type="button">Today</button>
+      <button id="nav-projects" class="nav-button" type="button">Projects</button>
       <button id="nav-timer" class="nav-button" type="button">Timer test</button>
+      <button id="nav-records" class="nav-button" type="button">Storage test</button>
       <button id="nav-diagnostics" class="nav-button" type="button">Diagnostics</button>
     </nav>
 
@@ -48,7 +50,137 @@
         <div class="notice notice-error">JavaScript is disabled. Enable JavaScript in Safari Settings and reload this page.</div>
       </noscript>
 
-      <section id="records-view" class="view-panel" aria-labelledby="records-heading">
+      <section id="today-view" class="view-panel" aria-labelledby="today-heading">
+        <div class="panel">
+          <div class="panel-heading-row wide-heading-row">
+            <h2 id="today-heading">Manual time entry</h2>
+            <label class="date-filter-label" for="selected-date">Day</label>
+            <input id="selected-date" class="date-filter" type="date">
+          </div>
+
+          <form id="entry-form" novalidate>
+            <input id="entry-id" type="hidden">
+            <div class="field-row two-columns">
+              <div class="field-column">
+                <label for="entry-project">Project</label>
+                <select id="entry-project" required></select>
+              </div>
+              <div class="field-column">
+                <label for="entry-task">Task</label>
+                <select id="entry-task"></select>
+              </div>
+            </div>
+            <div class="field-row duration-row">
+              <div class="duration-field">
+                <label for="entry-hours">Hours</label>
+                <input id="entry-hours" type="number" min="0" max="24" step="1" value="0">
+              </div>
+              <div class="duration-field">
+                <label for="entry-minutes">Minutes</label>
+                <input id="entry-minutes" type="number" min="0" max="59" step="1" value="0">
+              </div>
+              <div class="billable-field">
+                <label for="entry-billable">
+                  <input id="entry-billable" type="checkbox" checked>
+                  Billable
+                </label>
+              </div>
+            </div>
+            <label for="entry-description">Description</label>
+            <textarea id="entry-description" maxlength="500" rows="3" placeholder="What did you work on?"></textarea>
+            <p id="entry-error" class="field-error" role="alert"></p>
+            <div class="button-row">
+              <button id="entry-submit" class="button button-primary" type="submit">Add time entry</button>
+              <button id="entry-cancel" class="button is-hidden" type="button">Cancel editing</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading-row">
+            <h2>Entries for <span id="entries-date-label">today</span></h2>
+            <span id="day-total" class="total-badge">0h 00m</span>
+          </div>
+          <div id="entries-empty" class="empty-state">No time entries for this day.</div>
+          <ul id="entry-list" class="entry-list"></ul>
+        </div>
+
+        <div class="panel test-checklist">
+          <h2>Phase 2 iPad test</h2>
+          <ol>
+            <li>Create and edit a project and task from the Projects tab.</li>
+            <li>Add a 1 hour 30 minute entry and verify the daily total.</li>
+            <li>Refresh Safari, then edit, copy, and delete the entry.</li>
+            <li>Add an entry on another date and navigate between the two days.</li>
+            <li>Archive the project and confirm its old entries remain readable.</li>
+            <li>Restore it and confirm it is selectable again.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="projects-view" class="view-panel is-hidden" aria-labelledby="projects-heading">
+        <div class="panel">
+          <h2 id="projects-heading">Projects</h2>
+          <form id="project-form" novalidate>
+            <input id="project-id" type="hidden">
+            <div class="field-row project-form-row">
+              <div class="project-name-field">
+                <label for="project-name">Project name</label>
+                <input id="project-name" type="text" maxlength="80" autocomplete="off">
+              </div>
+              <div class="project-color-field">
+                <label for="project-color">Color</label>
+                <select id="project-color">
+                  <option value="#3b8fc2">Blue</option>
+                  <option value="#319a72">Green</option>
+                  <option value="#8b67b2">Purple</option>
+                  <option value="#d17a42">Orange</option>
+                  <option value="#c45555">Red</option>
+                  <option value="#667985">Gray</option>
+                </select>
+              </div>
+            </div>
+            <p id="project-error" class="field-error" role="alert"></p>
+            <div class="button-row">
+              <button id="project-submit" class="button button-primary" type="submit">Add project</button>
+              <button id="project-cancel" class="button is-hidden" type="button">Cancel editing</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>Tasks</h2>
+          <form id="task-form" novalidate>
+            <input id="task-id" type="hidden">
+            <div class="field-row two-columns">
+              <div class="field-column">
+                <label for="task-project">Project</label>
+                <select id="task-project"></select>
+              </div>
+              <div class="field-column">
+                <label for="task-name">Task name</label>
+                <input id="task-name" type="text" maxlength="80" autocomplete="off">
+              </div>
+            </div>
+            <p id="task-error" class="field-error" role="alert"></p>
+            <div class="button-row">
+              <button id="task-submit" class="button button-primary" type="submit">Add task</button>
+              <button id="task-cancel" class="button is-hidden" type="button">Cancel editing</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading-row">
+            <h2>Project list</h2>
+            <span id="project-count" class="count-badge">0</span>
+          </div>
+          <div id="projects-empty" class="empty-state">Create your first project to begin tracking time.</div>
+          <div id="project-list" class="project-list"></div>
+        </div>
+      </section>
+
+      <section id="records-view" class="view-panel is-hidden" aria-labelledby="records-heading">
         <div class="panel">
           <h2 id="records-heading">Local storage test</h2>
           <p class="intro-copy">Save a note, refresh or close Safari, and confirm that it remains here. This proves the storage foundation before time-tracking features are added.</p>
@@ -130,8 +262,10 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=1.1.0"></script>
-    <script src="js/timer.js?v=1.1.0"></script>
-    <script src="js/app.js?v=1.1.0"></script>
+    <script src="js/storage.js?v=2.0.0"></script>
+    <script src="js/timer.js?v=2.0.0"></script>
+    <script src="js/domain.js?v=2.0.0"></script>
+    <script src="js/product.js?v=2.0.0"></script>
+    <script src="js/app.js?v=2.0.0"></script>
   </body>
 </html>

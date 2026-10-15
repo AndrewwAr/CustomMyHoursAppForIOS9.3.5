@@ -2,13 +2,19 @@
   "use strict";
 
   var STORAGE_KEY = "myhours-custom.phase1.data";
-  var SCHEMA_VERSION = 2;
+  var SCHEMA_VERSION = 3;
 
   function createEmptyData() {
     return {
       schemaVersion: SCHEMA_VERSION,
       records: [],
       timer: null,
+      projects: [],
+      tasks: [],
+      timeEntries: [],
+      settings: {
+        selectedDate: null
+      },
       metadata: {
         createdAt: null,
         updatedAt: null
@@ -57,22 +63,147 @@
     return timer.startedAtMs === null;
   }
 
+  function isArray(value) {
+    return Object.prototype.toString.call(value) === "[object Array]";
+  }
+
+  function everyItem(items, validator) {
+    var index;
+
+    if (!isArray(items)) {
+      return false;
+    }
+
+    for (index = 0; index < items.length; index += 1) {
+      if (!validator(items[index])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function isValidProject(project) {
+    return !!project && typeof project.id === "string" &&
+      typeof project.name === "string" && project.name.length > 0 &&
+      typeof project.color === "string" && typeof project.archived === "boolean" &&
+      typeof project.createdAt === "string" && typeof project.updatedAt === "string";
+  }
+
+  function isValidTask(task) {
+    return !!task && typeof task.id === "string" &&
+      typeof task.projectId === "string" && typeof task.name === "string" &&
+      task.name.length > 0 && typeof task.archived === "boolean" &&
+      typeof task.createdAt === "string" && typeof task.updatedAt === "string";
+  }
+
+  function isValidTimeEntry(entry) {
+    return !!entry && typeof entry.id === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
+      typeof entry.projectId === "string" &&
+      (entry.taskId === null || typeof entry.taskId === "string") &&
+      typeof entry.durationMinutes === "number" &&
+      entry.durationMinutes > 0 && entry.durationMinutes <= 1440 &&
+      Math.floor(entry.durationMinutes) === entry.durationMinutes &&
+      typeof entry.description === "string" && typeof entry.billable === "boolean" &&
+      typeof entry.createdAt === "string" && typeof entry.updatedAt === "string";
+  }
+
+  function isValidSettings(settings) {
+    return !!settings && (settings.selectedDate === null ||
+      /^\d{4}-\d{2}-\d{2}$/.test(settings.selectedDate));
+  }
+
+  function hasUniqueIds(items) {
+    var seen = {};
+    var index;
+
+    for (index = 0; index < items.length; index += 1) {
+      if (seen[items[index].id]) {
+        return false;
+      }
+      seen[items[index].id] = true;
+    }
+
+    return true;
+  }
+
+  function findItem(items, id) {
+    var index;
+    for (index = 0; index < items.length; index += 1) {
+      if (items[index].id === id) {
+        return items[index];
+      }
+    }
+    return null;
+  }
+
+  function hasValidRelationships(data) {
+    var index;
+    var task;
+
+    for (index = 0; index < data.tasks.length; index += 1) {
+      if (!findItem(data.projects, data.tasks[index].projectId)) {
+        return false;
+      }
+    }
+
+    for (index = 0; index < data.timeEntries.length; index += 1) {
+      if (!findItem(data.projects, data.timeEntries[index].projectId)) {
+        return false;
+      }
+      if (data.timeEntries[index].taskId !== null) {
+        task = findItem(data.tasks, data.timeEntries[index].taskId);
+        if (!task || task.projectId !== data.timeEntries[index].projectId) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  function isValidVersion2(data) {
+    return !!data && data.schemaVersion === 2 && validateRecords(data.records) &&
+      isValidTimer(data.timer) && !!data.metadata && typeof data.metadata === "object";
+  }
+
   function validateData(data) {
     return !!data && data.schemaVersion === SCHEMA_VERSION &&
       validateRecords(data.records) && isValidTimer(data.timer) &&
-      !!data.metadata && typeof data.metadata === "object";
+      everyItem(data.projects, isValidProject) && hasUniqueIds(data.projects) &&
+      everyItem(data.tasks, isValidTask) && hasUniqueIds(data.tasks) &&
+      everyItem(data.timeEntries, isValidTimeEntry) && hasUniqueIds(data.timeEntries) &&
+      isValidSettings(data.settings) &&
+      !!data.metadata && typeof data.metadata === "object" &&
+      hasValidRelationships(data);
   }
 
   function migrateData(data) {
     if (data && data.schemaVersion === 1 && validateRecords(data.records)) {
-      return {
-        schemaVersion: SCHEMA_VERSION,
+      data = {
+        schemaVersion: 2,
         records: data.records,
         timer: null,
         metadata: data.metadata && typeof data.metadata === "object" ? data.metadata : {
           createdAt: null,
           updatedAt: null
         }
+      };
+    }
+
+    if (isValidVersion2(data)) {
+      return {
+        schemaVersion: SCHEMA_VERSION,
+        records: data.records,
+        timer: data.timer,
+        projects: [],
+        tasks: [],
+        timeEntries: [],
+        settings: {
+          selectedDate: null
+        },
+        metadata: data.metadata
       };
     }
 
@@ -143,7 +274,7 @@
     try {
       this.storage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      throw new Error("The note could not be saved. Safari storage may be full or unavailable.");
+      throw new Error("The data could not be saved. Safari storage may be full or unavailable.");
     }
   };
 

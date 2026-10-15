@@ -8,7 +8,8 @@ to the My Hours service.
 Phase 1 proves that the deployed application starts and that Safari can persist
 records locally. Phase 1.5 adds a persistent stopwatch to verify accurate timing
 across reloads, Safari backgrounding, and device sleep before full time-tracking
-features are introduced.
+features are introduced. Phase 2 adds the first usable manual time-tracking
+workflow with projects, tasks, daily entries, and totals.
 
 ## Run locally
 
@@ -63,6 +64,21 @@ hostname will make the old data unavailable at the new address.
 5. Close Safari, reopen the page, and verify that the timer continues.
 6. Pause the timer and verify that it stops increasing.
 7. Resume it, verify that it continues from the saved value, and then reset it.
+
+## Phase 2 physical iPad test
+
+1. Open **Projects** and create a project.
+2. Add a task to that project.
+3. Edit both names and verify the changes in the project list.
+4. Open **Today** and add a 1 hour 30 minute entry with a description.
+5. Confirm the daily total reads `1h 30m` after refreshing Safari.
+6. Edit the entry, duplicate it, and confirm the total changes correctly.
+7. Delete the duplicate and confirm the total returns to the expected value.
+8. Select another date, add an entry, then return to today.
+9. Archive the task and project and confirm historical entries retain their
+   names and durations.
+10. Restore the project and task and confirm they can be selected again.
+11. Verify that the timer test and the original storage-test notes still work.
 
 Data is stored only in Safari's local storage. Clearing Safari history and
 website data removes it. Backup and restore are scheduled for Phase 5.

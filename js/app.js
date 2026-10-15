@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "1.1.0-phase1.5";
+  var APP_VERSION = "2.0.0-phase2";
   var repository;
   var data;
   var storageStatus;
@@ -179,36 +179,25 @@
   }
 
   function setActiveView(name) {
-    var recordsView = byId("records-view");
-    var timerView = byId("timer-view");
-    var diagnosticsView = byId("diagnostics-view");
-    var recordsButton = byId("nav-records");
-    var timerButton = byId("nav-timer");
-    var diagnosticsButton = byId("nav-diagnostics");
+    var names = ["today", "projects", "timer", "records", "diagnostics"];
+    var index;
+
+    for (index = 0; index < names.length; index += 1) {
+      if (names[index] === name) {
+        show(byId(names[index] + "-view"));
+        byId("nav-" + names[index]).className = "nav-button is-active";
+      } else {
+        hide(byId(names[index] + "-view"));
+        byId("nav-" + names[index]).className = "nav-button";
+      }
+    }
 
     if (name === "diagnostics") {
-      hide(recordsView);
-      hide(timerView);
-      show(diagnosticsView);
-      recordsButton.className = "nav-button";
-      timerButton.className = "nav-button";
-      diagnosticsButton.className = "nav-button is-active";
       renderDiagnostics();
     } else if (name === "timer") {
-      hide(recordsView);
-      show(timerView);
-      hide(diagnosticsView);
-      recordsButton.className = "nav-button";
-      timerButton.className = "nav-button is-active";
-      diagnosticsButton.className = "nav-button";
       renderTimer();
-    } else {
-      show(recordsView);
-      hide(timerView);
-      hide(diagnosticsView);
-      recordsButton.className = "nav-button is-active";
-      timerButton.className = "nav-button";
-      diagnosticsButton.className = "nav-button";
+    } else if (name === "today" || name === "projects") {
+      window.MHProduct.renderAll();
     }
   }
 
@@ -323,6 +312,9 @@
       ["Storage key", repository.getStorageKey()],
       ["Schema version", window.MHStorage.schemaVersion],
       ["Saved records", data ? data.records.length : 0],
+      ["Projects", data ? data.projects.length : 0],
+      ["Tasks", data ? data.tasks.length : 0],
+      ["Time entries", data ? data.timeEntries.length : 0],
       ["Last saved", data && data.metadata.updatedAt ? data.metadata.updatedAt : "Never"],
       ["Timer state", data && data.timer ? data.timer.status : "Not started"],
       ["Timer elapsed", data && data.timer ? formatElapsed(window.MHTimer.getElapsed(data.timer, new Date().getTime())) : "00:00:00"],
@@ -397,6 +389,12 @@
   function bindEvents() {
     byId("record-form").onsubmit = saveRecord;
     byId("record-list").onclick = handleRecordListClick;
+    byId("nav-today").onclick = function () {
+      setActiveView("today");
+    };
+    byId("nav-projects").onclick = function () {
+      setActiveView("projects");
+    };
     byId("nav-records").onclick = function () {
       setActiveView("records");
     };
@@ -428,7 +426,7 @@
   function boot() {
     var browserStorage;
 
-    if (!window.MHStorage || !window.MHTimer) {
+    if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
       return;
     }
@@ -461,6 +459,13 @@
     }
 
     setText(byId("version-label"), "v" + APP_VERSION);
+    window.MHProduct.init({
+      data: data,
+      repository: repository,
+      storageStatus: storageStatus,
+      domain: window.MHDomain,
+      notify: setNotice
+    });
     renderRecords();
     renderTimer();
     renderDiagnostics();

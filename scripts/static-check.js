@@ -11,6 +11,8 @@ assert.strictEqual(/serviceWorker/i.test(html), false, "Service workers are unav
 assert.ok(/apple-mobile-web-app-capable/i.test(html), "iOS home-screen metadata is required.");
 assert.ok(/js\/storage\.js/.test(html), "The storage component must be loaded.");
 assert.ok(/js\/timer\.js/.test(html), "The timer component must be loaded.");
+assert.ok(/js\/domain\.js/.test(html), "The domain component must be loaded.");
+assert.ok(/js\/product\.js/.test(html), "The product component must be loaded.");
 assert.ok(/js\/app\.js/.test(html), "The application component must be loaded.");
 
 console.log("Static compatibility checks passed.");

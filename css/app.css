@@ -14,14 +14,32 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font-family: inherit;
   font-size: 16px;
 }
 
 button,
-input {
+input,
+select {
   min-height: 46px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #9babb4;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #20313d;
+  background: #ffffff;
+}
+
+textarea {
+  resize: vertical;
 }
 
 .app-header {
@@ -71,6 +89,8 @@ input {
 }
 
 .app-nav {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0 18px;
   border-bottom: 1px solid #cbd5db;
   background: #ffffff;
@@ -213,6 +233,202 @@ label {
 .panel-heading-row {
   position: relative;
   padding-right: 50px;
+}
+
+.wide-heading-row {
+  min-height: 48px;
+  padding-right: 230px;
+}
+
+.date-filter-label {
+  position: absolute;
+  top: 10px;
+  right: 172px;
+  margin: 0;
+}
+
+.date-filter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 160px;
+}
+
+.field-row {
+  position: relative;
+  margin: 0 -7px 14px;
+  overflow: hidden;
+}
+
+.field-column {
+  float: left;
+  width: 50%;
+  padding: 0 7px;
+  box-sizing: border-box;
+}
+
+.duration-field {
+  float: left;
+  width: 120px;
+  padding: 0 7px;
+  box-sizing: border-box;
+}
+
+.billable-field {
+  float: left;
+  padding: 35px 7px 0;
+}
+
+.billable-field label {
+  white-space: nowrap;
+}
+
+.billable-field input {
+  display: inline-block;
+  width: 24px;
+  min-height: 24px;
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+}
+
+.project-name-field {
+  float: left;
+  width: 70%;
+  padding: 0 7px;
+  box-sizing: border-box;
+}
+
+.project-color-field {
+  float: left;
+  width: 30%;
+  padding: 0 7px;
+  box-sizing: border-box;
+}
+
+.total-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 78px;
+  padding: 4px 8px;
+  border-radius: 14px;
+  background: #dff2e9;
+  color: #216047;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry-item {
+  position: relative;
+  min-height: 80px;
+  padding: 14px 250px 14px 18px;
+  border-top: 1px solid #e0e6e9;
+  border-left: 5px solid #667985;
+}
+
+.entry-item:first-child {
+  border-top: 0;
+}
+
+.entry-title {
+  display: block;
+  margin-bottom: 4px;
+  color: #173c50;
+  font-weight: bold;
+}
+
+.entry-description,
+.entry-meta {
+  display: block;
+  color: #657983;
+  font-size: 14px;
+}
+
+.entry-duration {
+  position: absolute;
+  top: 19px;
+  right: 166px;
+  font-weight: bold;
+}
+
+.entry-actions {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  width: 155px;
+  text-align: right;
+}
+
+.entry-actions .button,
+.project-actions .button,
+.task-actions .button {
+  min-height: 38px;
+  margin: 3px 0 3px 3px;
+  padding: 6px 9px;
+  font-size: 13px;
+}
+
+.project-card {
+  margin: 0 0 14px;
+  padding: 14px;
+  border: 1px solid #d4dde2;
+  border-left: 7px solid #667985;
+  border-radius: 5px;
+  background: #fbfcfc;
+}
+
+.project-card.is-archived {
+  opacity: 0.72;
+}
+
+.project-card-heading {
+  position: relative;
+  min-height: 42px;
+  padding-right: 180px;
+}
+
+.project-card-heading h3 {
+  margin: 5px 0 0;
+  color: #173c50;
+  font-size: 18px;
+}
+
+.project-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.task-list {
+  margin: 10px 0 0;
+  padding: 0;
+  border-top: 1px solid #e0e6e9;
+  list-style: none;
+}
+
+.task-item {
+  position: relative;
+  min-height: 38px;
+  padding: 10px 155px 4px 0;
+  border-bottom: 1px solid #e7ecef;
+}
+
+.task-item.is-archived {
+  color: #7b898f;
+  text-decoration: line-through;
+}
+
+.task-actions {
+  position: absolute;
+  top: 2px;
+  right: 0;
 }
 
 .count-badge {
@@ -404,5 +620,55 @@ label {
 
   .timer-display {
     font-size: 45px;
+  }
+
+  .wide-heading-row {
+    padding-right: 0;
+  }
+
+  .date-filter-label,
+  .date-filter {
+    position: static;
+    width: 100%;
+  }
+
+  .date-filter-label {
+    margin-top: 12px;
+  }
+
+  .field-column,
+  .project-name-field,
+  .project-color-field {
+    float: none;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .entry-item {
+    padding-right: 0;
+    padding-bottom: 62px;
+  }
+
+  .entry-duration {
+    top: auto;
+    right: auto;
+    bottom: 22px;
+    left: 18px;
+  }
+
+  .entry-actions {
+    top: auto;
+    right: 0;
+    bottom: 8px;
+  }
+
+  .project-card-heading {
+    padding-right: 0;
+    padding-bottom: 45px;
+  }
+
+  .project-actions {
+    top: auto;
+    bottom: 0;
   }
 }

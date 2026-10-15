@@ -1,0 +1,619 @@
+(function (root, document) {
+  "use strict";
+
+  var state;
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function text(element, value) {
+    element.textContent = String(value);
+  }
+
+  function show(element) {
+    element.className = element.className.replace(/(?:^|\s)is-hidden(?:\s|$)/g, " ");
+  }
+
+  function hide(element) {
+    if ((" " + element.className + " ").indexOf(" is-hidden ") === -1) {
+      element.className += " is-hidden";
+    }
+  }
+
+  function createId(prefix) {
+    return prefix + "-" + new Date().getTime() + "-" + Math.floor(Math.random() * 100000);
+  }
+
+  function replaceData(restored) {
+    var key;
+
+    for (key in state.data) {
+      if (Object.prototype.hasOwnProperty.call(state.data, key)) {
+        delete state.data[key];
+      }
+    }
+
+    for (key in restored) {
+      if (Object.prototype.hasOwnProperty.call(restored, key)) {
+        state.data[key] = restored[key];
+      }
+    }
+  }
+
+  function saveMutation(mutator, errorElement, successMessage) {
+    var backup = JSON.stringify(state.data);
+
+    text(errorElement, "");
+    try {
+      mutator();
+      state.repository.save(state.data);
+      renderAll();
+      state.notify("success", successMessage);
+      return true;
+    } catch (error) {
+      replaceData(JSON.parse(backup));
+      renderAll();
+      text(errorElement, error.message);
+      state.notify("error", error.message);
+      return false;
+    }
+  }
+
+  function appendOption(select, value, label, selected) {
+    var option = document.createElement("option");
+    option.value = value;
+    text(option, label);
+    option.selected = selected === value;
+    select.appendChild(option);
+  }
+
+  function clearChildren(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  function fillProjectSelect(select, selectedId, allowArchivedSelected) {
+    var projects = state.data.projects;
+    var project;
+    var index;
+
+    clearChildren(select);
+    appendOption(select, "", projects.length ? "Select a project" : "Create a project first", selectedId);
+
+    for (index = 0; index < projects.length; index += 1) {
+      project = projects[index];
+      if (!project.archived || (allowArchivedSelected && project.id === selectedId)) {
+        appendOption(select, project.id, project.name + (project.archived ? " (archived)" : ""), selectedId);
+      }
+    }
+  }
+
+  function fillTaskSelect(select, projectId, selectedId) {
+    var tasks = state.domain.tasksForProject(state.data.tasks, projectId, selectedId);
+    var task;
+    var index;
+
+    clearChildren(select);
+    appendOption(select, "", "No task", selectedId);
+    for (index = 0; index < tasks.length; index += 1) {
+      task = tasks[index];
+      appendOption(select, task.id, task.name + (task.archived ? " (archived)" : ""), selectedId);
+    }
+  }
+
+  function resetProjectForm() {
+    byId("project-id").value = "";
+    byId("project-name").value = "";
+    byId("project-color").value = "#3b8fc2";
+    text(byId("project-error"), "");
+    text(byId("project-submit"), "Add project");
+    hide(byId("project-cancel"));
+  }
+
+  function resetTaskForm() {
+    byId("task-id").value = "";
+    byId("task-name").value = "";
+    text(byId("task-error"), "");
+    text(byId("task-submit"), "Add task");
+    hide(byId("task-cancel"));
+    fillProjectSelect(byId("task-project"), "", false);
+  }
+
+  function resetEntryForm() {
+    byId("entry-id").value = "";
+    byId("entry-hours").value = "0";
+    byId("entry-minutes").value = "0";
+    byId("entry-description").value = "";
+    byId("entry-billable").checked = true;
+    text(byId("entry-error"), "");
+    text(byId("entry-submit"), "Add time entry");
+    hide(byId("entry-cancel"));
+    fillProjectSelect(byId("entry-project"), "", false);
+    fillTaskSelect(byId("entry-task"), "", "");
+  }
+
+  function saveProject(event) {
+    var id = byId("project-id").value;
+    var name = state.domain.trim(byId("project-name").value);
+    var color = byId("project-color").value;
+    var existing = state.domain.findById(state.data.projects, id);
+    var now = new Date().toISOString();
+
+    event.preventDefault();
+    if (!name) {
+      text(byId("project-error"), "Enter a project name.");
+      byId("project-name").focus();
+      return;
+    }
+
+    if (state.domain.hasDuplicateName(state.data.projects, name, undefined, id)) {
+      text(byId("project-error"), "An active project already uses this name.");
+      return;
+    }
+
+    if (saveMutation(function () {
+      if (existing) {
+        existing.name = name;
+        existing.color = color;
+        existing.updatedAt = now;
+      } else {
+        state.data.projects.push({
+          id: createId("project"),
+          name: name,
+          color: color,
+          archived: false,
+          createdAt: now,
+          updatedAt: now
+        });
+      }
+    }, byId("project-error"), existing ? "Project updated." : "Project created.")) {
+      resetProjectForm();
+      resetTaskForm();
+      resetEntryForm();
+      renderAll();
+    }
+  }
+
+  function saveTask(event) {
+    var id = byId("task-id").value;
+    var projectId = byId("task-project").value;
+    var name = state.domain.trim(byId("task-name").value);
+    var existing = state.domain.findById(state.data.tasks, id);
+    var project = state.domain.findById(state.data.projects, projectId);
+    var now = new Date().toISOString();
+
+    event.preventDefault();
+    if (!project || project.archived) {
+      text(byId("task-error"), "Select an active project.");
+      return;
+    }
+    if (!name) {
+      text(byId("task-error"), "Enter a task name.");
+      byId("task-name").focus();
+      return;
+    }
+    if (state.domain.hasDuplicateName(state.data.tasks, name, projectId, id)) {
+      text(byId("task-error"), "This project already has an active task with that name.");
+      return;
+    }
+
+    if (saveMutation(function () {
+      if (existing) {
+        existing.projectId = projectId;
+        existing.name = name;
+        existing.updatedAt = now;
+      } else {
+        state.data.tasks.push({
+          id: createId("task"),
+          projectId: projectId,
+          name: name,
+          archived: false,
+          createdAt: now,
+          updatedAt: now
+        });
+      }
+    }, byId("task-error"), existing ? "Task updated." : "Task created.")) {
+      resetTaskForm();
+      resetEntryForm();
+      renderAll();
+    }
+  }
+
+  function saveEntry(event) {
+    var id = byId("entry-id").value;
+    var date = byId("selected-date").value;
+    var projectId = byId("entry-project").value;
+    var taskId = byId("entry-task").value || null;
+    var duration = state.domain.parseDuration(byId("entry-hours").value, byId("entry-minutes").value);
+    var project = state.domain.findById(state.data.projects, projectId);
+    var task = taskId ? state.domain.findById(state.data.tasks, taskId) : null;
+    var existing = state.domain.findById(state.data.timeEntries, id);
+    var now = new Date().toISOString();
+
+    event.preventDefault();
+    if (!state.domain.isValidDateKey(date)) {
+      text(byId("entry-error"), "Enter a valid date in YYYY-MM-DD format.");
+      return;
+    }
+    if (!project || (project.archived && (!existing || existing.projectId !== projectId))) {
+      text(byId("entry-error"), "Select an active project.");
+      return;
+    }
+    if (task && (task.projectId !== projectId || (task.archived && (!existing || existing.taskId !== taskId)))) {
+      text(byId("entry-error"), "Select a task belonging to this project.");
+      return;
+    }
+    if (!duration.valid) {
+      text(byId("entry-error"), duration.message);
+      return;
+    }
+
+    if (saveMutation(function () {
+      if (existing) {
+        existing.date = date;
+        existing.projectId = projectId;
+        existing.taskId = taskId;
+        existing.durationMinutes = duration.minutes;
+        existing.description = state.domain.trim(byId("entry-description").value);
+        existing.billable = byId("entry-billable").checked;
+        existing.updatedAt = now;
+      } else {
+        state.data.timeEntries.push({
+          id: createId("entry"),
+          date: date,
+          projectId: projectId,
+          taskId: taskId,
+          durationMinutes: duration.minutes,
+          description: state.domain.trim(byId("entry-description").value),
+          billable: byId("entry-billable").checked,
+          createdAt: now,
+          updatedAt: now
+        });
+      }
+      state.data.settings.selectedDate = date;
+    }, byId("entry-error"), existing ? "Time entry updated." : "Time entry added.")) {
+      resetEntryForm();
+      renderAll();
+    }
+  }
+
+  function editProject(id) {
+    var project = state.domain.findById(state.data.projects, id);
+    if (!project) {
+      return;
+    }
+    byId("project-id").value = project.id;
+    byId("project-name").value = project.name;
+    byId("project-color").value = project.color;
+    text(byId("project-submit"), "Save project");
+    show(byId("project-cancel"));
+    byId("project-name").focus();
+  }
+
+  function editTask(id) {
+    var task = state.domain.findById(state.data.tasks, id);
+    if (!task) {
+      return;
+    }
+    byId("task-id").value = task.id;
+    fillProjectSelect(byId("task-project"), task.projectId, false);
+    byId("task-name").value = task.name;
+    text(byId("task-submit"), "Save task");
+    show(byId("task-cancel"));
+    byId("task-name").focus();
+  }
+
+  function editEntry(id) {
+    var entry = state.domain.findById(state.data.timeEntries, id);
+    if (!entry) {
+      return;
+    }
+    byId("entry-id").value = entry.id;
+    byId("selected-date").value = entry.date;
+    state.data.settings.selectedDate = entry.date;
+    fillProjectSelect(byId("entry-project"), entry.projectId, true);
+    fillTaskSelect(byId("entry-task"), entry.projectId, entry.taskId || "");
+    byId("entry-hours").value = String(Math.floor(entry.durationMinutes / 60));
+    byId("entry-minutes").value = String(entry.durationMinutes % 60);
+    byId("entry-description").value = entry.description;
+    byId("entry-billable").checked = entry.billable;
+    text(byId("entry-submit"), "Save time entry");
+    show(byId("entry-cancel"));
+    root.scrollTo(0, 0);
+  }
+
+  function toggleProject(id) {
+    var project = state.domain.findById(state.data.projects, id);
+    if (!project) {
+      return;
+    }
+    saveMutation(function () {
+      project.archived = !project.archived;
+      project.updatedAt = new Date().toISOString();
+    }, byId("project-error"), project.archived ? "Project restored." : "Project archived.");
+    resetProjectForm();
+    resetTaskForm();
+    resetEntryForm();
+  }
+
+  function toggleTask(id) {
+    var task = state.domain.findById(state.data.tasks, id);
+    if (!task) {
+      return;
+    }
+    saveMutation(function () {
+      task.archived = !task.archived;
+      task.updatedAt = new Date().toISOString();
+    }, byId("task-error"), task.archived ? "Task restored." : "Task archived.");
+    resetTaskForm();
+    resetEntryForm();
+  }
+
+  function duplicateEntry(id) {
+    var entry = state.domain.findById(state.data.timeEntries, id);
+    var now = new Date().toISOString();
+    if (!entry) {
+      return;
+    }
+    saveMutation(function () {
+      state.data.timeEntries.push({
+        id: createId("entry"),
+        date: entry.date,
+        projectId: entry.projectId,
+        taskId: entry.taskId,
+        durationMinutes: entry.durationMinutes,
+        description: entry.description,
+        billable: entry.billable,
+        createdAt: now,
+        updatedAt: now
+      });
+    }, byId("entry-error"), "Time entry duplicated.");
+  }
+
+  function deleteEntry(id) {
+    var entry = state.domain.findById(state.data.timeEntries, id);
+    var index;
+    if (!entry || !root.confirm("Delete this time entry?")) {
+      return;
+    }
+    saveMutation(function () {
+      for (index = 0; index < state.data.timeEntries.length; index += 1) {
+        if (state.data.timeEntries[index].id === id) {
+          state.data.timeEntries.splice(index, 1);
+          break;
+        }
+      }
+    }, byId("entry-error"), "Time entry deleted.");
+    resetEntryForm();
+  }
+
+  function actionButton(label, action, id, danger) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "button" + (danger ? " button-danger" : "");
+    button.setAttribute("data-action", action);
+    button.setAttribute("data-id", id);
+    text(button, label);
+    return button;
+  }
+
+  function renderProjects() {
+    var list = byId("project-list");
+    var project;
+    var card;
+    var heading;
+    var title;
+    var actions;
+    var tasks;
+    var taskList;
+    var taskItem;
+    var taskActions;
+    var index;
+    var taskIndex;
+
+    clearChildren(list);
+    text(byId("project-count"), state.data.projects.length);
+    if (!state.data.projects.length) {
+      show(byId("projects-empty"));
+    } else {
+      hide(byId("projects-empty"));
+    }
+
+    for (index = 0; index < state.data.projects.length; index += 1) {
+      project = state.data.projects[index];
+      card = document.createElement("div");
+      card.className = "project-card" + (project.archived ? " is-archived" : "");
+      card.style.borderLeftColor = project.color;
+      heading = document.createElement("div");
+      heading.className = "project-card-heading";
+      title = document.createElement("h3");
+      text(title, project.name + (project.archived ? " (archived)" : ""));
+      actions = document.createElement("div");
+      actions.className = "project-actions";
+      if (!project.archived) {
+        actions.appendChild(actionButton("Edit", "project-edit", project.id, false));
+      }
+      actions.appendChild(actionButton(project.archived ? "Restore" : "Archive", "project-toggle", project.id, project.archived ? false : true));
+      heading.appendChild(title);
+      heading.appendChild(actions);
+      card.appendChild(heading);
+
+      tasks = state.data.tasks.filter(function (candidate) {
+        return candidate.projectId === project.id;
+      });
+      taskList = document.createElement("ul");
+      taskList.className = "task-list";
+      if (!tasks.length) {
+        taskItem = document.createElement("li");
+        taskItem.className = "task-item";
+        text(taskItem, "No tasks");
+        taskList.appendChild(taskItem);
+      }
+      for (taskIndex = 0; taskIndex < tasks.length; taskIndex += 1) {
+        taskItem = document.createElement("li");
+        taskItem.className = "task-item" + (tasks[taskIndex].archived ? " is-archived" : "");
+        text(taskItem, tasks[taskIndex].name + (tasks[taskIndex].archived ? " (archived)" : ""));
+        taskActions = document.createElement("span");
+        taskActions.className = "task-actions";
+        if (!tasks[taskIndex].archived && !project.archived) {
+          taskActions.appendChild(actionButton("Edit", "task-edit", tasks[taskIndex].id, false));
+        }
+        if (!project.archived) {
+          taskActions.appendChild(actionButton(tasks[taskIndex].archived ? "Restore" : "Archive", "task-toggle", tasks[taskIndex].id, !tasks[taskIndex].archived));
+        }
+        taskItem.appendChild(taskActions);
+        taskList.appendChild(taskItem);
+      }
+      card.appendChild(taskList);
+      list.appendChild(card);
+    }
+  }
+
+  function renderEntries() {
+    var selectedDate = state.data.settings.selectedDate || state.domain.dateKey(new Date());
+    var entries = state.domain.entriesForDate(state.data.timeEntries, selectedDate);
+    var list = byId("entry-list");
+    var entry;
+    var project;
+    var task;
+    var item;
+    var title;
+    var description;
+    var meta;
+    var duration;
+    var actions;
+    var index;
+
+    state.data.settings.selectedDate = selectedDate;
+    byId("selected-date").value = selectedDate;
+    text(byId("entries-date-label"), selectedDate);
+    text(byId("day-total"), state.domain.formatDuration(state.domain.totalForDate(state.data.timeEntries, selectedDate)));
+    clearChildren(list);
+    entries.length ? hide(byId("entries-empty")) : show(byId("entries-empty"));
+
+    for (index = 0; index < entries.length; index += 1) {
+      entry = entries[index];
+      project = state.domain.findById(state.data.projects, entry.projectId);
+      task = entry.taskId ? state.domain.findById(state.data.tasks, entry.taskId) : null;
+      item = document.createElement("li");
+      item.className = "entry-item";
+      item.style.borderLeftColor = project ? project.color : "#667985";
+      title = document.createElement("span");
+      title.className = "entry-title";
+      text(title, (project ? project.name : "Unknown project") + (task ? " / " + task.name : ""));
+      description = document.createElement("span");
+      description.className = "entry-description";
+      text(description, entry.description || "No description");
+      meta = document.createElement("span");
+      meta.className = "entry-meta";
+      text(meta, entry.billable ? "Billable" : "Non-billable");
+      duration = document.createElement("span");
+      duration.className = "entry-duration";
+      text(duration, state.domain.formatDuration(entry.durationMinutes));
+      actions = document.createElement("span");
+      actions.className = "entry-actions";
+      actions.appendChild(actionButton("Edit", "entry-edit", entry.id, false));
+      actions.appendChild(actionButton("Copy", "entry-duplicate", entry.id, false));
+      actions.appendChild(actionButton("Delete", "entry-delete", entry.id, true));
+      item.appendChild(title);
+      item.appendChild(description);
+      item.appendChild(meta);
+      item.appendChild(duration);
+      item.appendChild(actions);
+      list.appendChild(item);
+    }
+  }
+
+  function renderFormOptions() {
+    var editingEntry = state.domain.findById(state.data.timeEntries, byId("entry-id").value);
+    var currentProject = byId("entry-project").value;
+    var currentTask = byId("entry-task").value;
+    var taskProject = byId("task-project").value;
+
+    fillProjectSelect(byId("entry-project"), currentProject, !!editingEntry);
+    fillTaskSelect(byId("entry-task"), byId("entry-project").value, currentTask);
+    fillProjectSelect(byId("task-project"), taskProject, false);
+  }
+
+  function renderAll() {
+    renderProjects();
+    renderEntries();
+    renderFormOptions();
+  }
+
+  function handleProjectActions(event) {
+    var target = event.target || event.srcElement;
+    var action;
+    var id;
+    if (!target || target.tagName.toLowerCase() !== "button") {
+      return;
+    }
+    action = target.getAttribute("data-action");
+    id = target.getAttribute("data-id");
+    if (action === "project-edit") { editProject(id); }
+    if (action === "project-toggle") { toggleProject(id); }
+    if (action === "task-edit") { editTask(id); }
+    if (action === "task-toggle") { toggleTask(id); }
+  }
+
+  function handleEntryActions(event) {
+    var target = event.target || event.srcElement;
+    var action;
+    var id;
+    if (!target || target.tagName.toLowerCase() !== "button") {
+      return;
+    }
+    action = target.getAttribute("data-action");
+    id = target.getAttribute("data-id");
+    if (action === "entry-edit") { editEntry(id); }
+    if (action === "entry-duplicate") { duplicateEntry(id); }
+    if (action === "entry-delete") { deleteEntry(id); }
+  }
+
+  function changeSelectedDate() {
+    var date = byId("selected-date").value;
+    if (!state.domain.isValidDateKey(date)) {
+      text(byId("entry-error"), "Enter a valid date in YYYY-MM-DD format.");
+      return;
+    }
+    saveMutation(function () {
+      state.data.settings.selectedDate = date;
+    }, byId("entry-error"), "Selected day changed.");
+    resetEntryForm();
+    renderAll();
+  }
+
+  function bindEvents() {
+    byId("project-form").onsubmit = saveProject;
+    byId("task-form").onsubmit = saveTask;
+    byId("entry-form").onsubmit = saveEntry;
+    byId("project-cancel").onclick = resetProjectForm;
+    byId("task-cancel").onclick = resetTaskForm;
+    byId("entry-cancel").onclick = resetEntryForm;
+    byId("project-list").onclick = handleProjectActions;
+    byId("entry-list").onclick = handleEntryActions;
+    byId("entry-project").onchange = function () {
+      fillTaskSelect(byId("entry-task"), byId("entry-project").value, "");
+    };
+    byId("selected-date").onchange = changeSelectedDate;
+  }
+
+  function init(options) {
+    state = options;
+    if (!state.data.settings.selectedDate || !state.domain.isValidDateKey(state.data.settings.selectedDate)) {
+      state.data.settings.selectedDate = state.domain.dateKey(new Date());
+    }
+    bindEvents();
+    resetProjectForm();
+    resetTaskForm();
+    resetEntryForm();
+    renderAll();
+  }
+
+  root.MHProduct = {
+    init: init,
+    renderAll: renderAll
+  };
+}(this, document));
