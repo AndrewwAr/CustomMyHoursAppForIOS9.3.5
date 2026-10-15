@@ -9,7 +9,7 @@ Last updated: 2026-10-16
 | Phase 1 — compatibility and persistence proof | Complete | Passed |
 | Phase 1.5 — persistent timer proof | Complete | Passed |
 | Phase 2 — manual time-entry MVP | Complete | Passed |
-| Phase 3 — timer-to-time-entry workflow | In progress | Not tested |
+| Phase 3 — timer-to-time-entry workflow | Complete | Passed |
 | Phase 4 — weekly timesheet and reporting | Not started | Not tested |
 | Phase 5 — backup, restore, and export | Not started | Not tested |
 | Phase 6 — product hardening | Not started | Not tested |
@@ -77,9 +77,11 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [x] Add automated migration, timer metadata, and timer-to-entry tests.
 - [x] Complete interactive desktop browser verification.
 - [x] Deploy Phase 3 version 3.0.0 to GitHub Pages.
-- [ ] Complete the Phase 3 physical iPad checklist.
+- [x] Complete the Phase 3 physical iPad checklist.
 
 Deployment commit: `b73c23e`
+
+Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 
 Deployment commit: `7c2e5b2`
 

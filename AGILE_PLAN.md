@@ -104,7 +104,8 @@ The application is useful for basic daily time tracking without a live timer.
 
 ## Phase 3 — Reliable timer
 
-Implementation status: in progress for version 3.0.0.
+Implementation status: complete in version 3.0.0; physical iPad acceptance
+passed.
 
 ### User outcome
 
