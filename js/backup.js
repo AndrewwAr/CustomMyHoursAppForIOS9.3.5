@@ -22,6 +22,14 @@
     url = root.URL.createObjectURL(blob);
     link = document.createElement("a");
     link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Open export in new page";
+    link.className = "button backup-download";
+    byId("backup-new-page").innerHTML = "";
+    byId("backup-new-page").appendChild(link);
+    link = document.createElement("a");
+    link.href = url;
     link.download = name;
     link.textContent = "Download " + name;
     link.className = "button button-primary backup-download";
