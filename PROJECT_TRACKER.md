@@ -110,8 +110,10 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [ ] Export time entries as a CSV file for sharing or archiving.
 - [ ] Add backup, restore, and CSV tests.
 - [ ] Complete interactive desktop browser verification.
-- [ ] Deploy Phase 5 version 5.0.0 to GitHub Pages.
+- [x] Deploy Phase 5 version 5.0.0 to GitHub Pages.
 - [ ] Complete the Phase 5 physical iPad checklist.
+
+Deployment commit: `ba8e3fa`
 
 ## Working agreement
 
