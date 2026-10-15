@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My Hours">
+    <meta name="format-detection" content="telephone=no">
+    <title>My Hours Custom</title>
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icon.svg">
+    <link rel="stylesheet" href="css/app.css?v=1.0.0">
+    <script>
+      window.__mhStartupErrors = [];
+      window.onerror = function (message, source, line, column) {
+        window.__mhStartupErrors.push({
+          message: String(message || "Unknown startup error"),
+          source: String(source || ""),
+          line: line || 0,
+          column: column || 0
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-mark" aria-hidden="true">MH</div>
+      <div class="brand-copy">
+        <h1>My Hours Custom</h1>
+        <p>Legacy iPad compatibility build</p>
+      </div>
+      <span id="version-label" class="version-label">v1.0.0</span>
+    </header>
+
+    <nav class="app-nav" aria-label="Main navigation">
+      <button id="nav-records" class="nav-button is-active" type="button">Storage test</button>
+      <button id="nav-diagnostics" class="nav-button" type="button">Diagnostics</button>
+    </nav>
+
+    <main class="page-shell">
+      <div id="startup-message" class="notice notice-info" role="status">
+        Starting the compatibility application&hellip;
+      </div>
+
+      <noscript>
+        <div class="notice notice-error">JavaScript is disabled. Enable JavaScript in Safari Settings and reload this page.</div>
+      </noscript>
+
+      <section id="records-view" class="view-panel" aria-labelledby="records-heading">
+        <div class="panel">
+          <h2 id="records-heading">Local storage test</h2>
+          <p class="intro-copy">Save a note, refresh or close Safari, and confirm that it remains here. This proves the storage foundation before time-tracking features are added.</p>
+
+          <form id="record-form" novalidate>
+            <label for="record-note">Test note</label>
+            <div class="form-row">
+              <input id="record-note" name="note" type="text" maxlength="120" autocomplete="off" placeholder="For example: iPad test passed">
+              <button class="button button-primary" type="submit">Save note</button>
+            </div>
+            <p id="form-error" class="field-error" role="alert"></p>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading-row">
+            <h2>Saved notes</h2>
+            <span id="record-count" class="count-badge">0</span>
+          </div>
+          <div id="empty-state" class="empty-state">No notes have been saved on this device.</div>
+          <ul id="record-list" class="record-list"></ul>
+        </div>
+
+        <div class="panel test-checklist">
+          <h2>Phase 1 iPad test</h2>
+          <ol>
+            <li>Save a note and refresh this page.</li>
+            <li>Close Safari, reopen it, and return to this URL.</li>
+            <li>Rotate the iPad and verify both layouts.</li>
+            <li>Restart the iPad and confirm that the note still exists.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="diagnostics-view" class="view-panel is-hidden" aria-labelledby="diagnostics-heading">
+        <div class="panel">
+          <h2 id="diagnostics-heading">Device diagnostics</h2>
+          <p class="intro-copy">Use this report when the app does not behave as expected on the iPad.</p>
+          <dl id="diagnostic-list" class="diagnostic-list"></dl>
+          <div class="button-row">
+            <button id="refresh-diagnostics" class="button" type="button">Refresh report</button>
+            <button id="copy-diagnostics" class="button button-primary" type="button">Copy report</button>
+          </div>
+          <p id="copy-status" class="action-status" role="status"></p>
+          <label id="diagnostic-output-label" class="is-hidden" for="diagnostic-output">If copying is unavailable, select and copy this text:</label>
+          <textarea id="diagnostic-output" class="diagnostic-output is-hidden" readonly></textarea>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      Data is stored only in Safari on this device. Clearing Safari website data will remove it.
+    </footer>
+
+    <script src="js/storage.js?v=1.0.0"></script>
+    <script src="js/app.js?v=1.0.0"></script>
+  </body>
+</html>
