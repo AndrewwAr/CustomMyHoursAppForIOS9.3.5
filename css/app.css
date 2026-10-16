@@ -548,6 +548,22 @@ label {
   display: none;
 }
 
+.active-timer-bar {
+  display: block;
+  margin: 18px 0 0;
+  padding: 14px;
+  border: 1px solid #3d8066;
+  border-radius: 6px;
+  background: #15382d;
+  text-align: left;
+}
+
+.active-timer-task { display: inline-block; width: 42%; color: #dff9eb; font-weight: bold; vertical-align: middle; }
+.active-timer-task span { display: block; }
+.active-timer-display { display: inline-block; width: 24%; color: #78e3b5; font-family: "Courier New", Courier, monospace; font-size: 22px; text-align: center; vertical-align: middle; }
+.active-timer-state { display: inline-block; width: 12%; color: #9bf0c7; font-size: 13px; text-align: center; vertical-align: middle; }
+.active-timer-bar .button { min-height: 38px; margin: 4px 0 4px 5px; }
+
 .timer-panel > form {
   margin: 16px 0 0;
   text-align: left;
@@ -790,6 +806,22 @@ label { color: #d8e1e7; }
 
   .timer-display {
     font-size: 45px;
+  }
+
+  .active-timer-task,
+  .active-timer-display,
+  .active-timer-state {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    text-align: left;
+  }
+
+  .active-timer-display { text-align: center; }
+
+  .active-timer-bar .button {
+    width: 100%;
+    margin: 4px 0;
   }
 
   .wide-heading-row {

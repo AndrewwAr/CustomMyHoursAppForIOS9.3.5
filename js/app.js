@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.4.0-phase6";
+  var APP_VERSION = "6.5.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -252,6 +252,18 @@
     show(byId("new-time-log"));
   }
 
+  function setTimerFormCollapsed(collapsed) {
+    if (collapsed) {
+      hide(byId("entry-form"));
+      hide(byId("timer-actions"));
+      show(byId("active-timer-bar"));
+    } else {
+      show(byId("entry-form"));
+      show(byId("timer-actions"));
+      hide(byId("active-timer-bar"));
+    }
+  }
+
   function appendTimerOption(select, value, label, selected) {
     var option = document.createElement("option");
     option.value = value;
@@ -318,18 +330,27 @@
     setText(byId("timer-error"), "");
 
     if (!timer) {
+      setTimerFormCollapsed(false);
       setText(byId("timer-state"), "Ready to start");
       setText(toggle, "Start timer");
       reset.disabled = true;
       save.disabled = true;
     } else if (timer.status === "running") {
+      setTimerFormCollapsed(true);
       showComposer();
+      setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
+      setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
+      setText(byId("active-timer-toggle"), "Pause");
       setText(byId("timer-state"), "Running - saved on this device");
       setText(toggle, "Pause timer");
       reset.disabled = false;
       save.disabled = false;
     } else {
+      setTimerFormCollapsed(true);
       showComposer();
+      setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
+      setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
+      setText(byId("active-timer-toggle"), "Resume");
       setText(byId("timer-state"), "Paused - elapsed time is saved");
       setText(toggle, "Resume timer");
       reset.disabled = false;
@@ -593,6 +614,9 @@
     byId("new-time-log").onclick = showComposer;
     byId("composer-dismiss").onclick = dismissComposer;
     byId("composer-dismiss-action").onclick = dismissComposer;
+    byId("active-timer-toggle").onclick = toggleTimer;
+    byId("active-timer-save").onclick = stopAndSaveTimer;
+    byId("active-timer-reset").onclick = resetTimer;
     byId("dismiss-guide").onclick = function () {
       byId("first-run-guide").className += " is-hidden";
       try { window.localStorage.setItem("myhours-custom.guide-seen", "yes"); } catch (ignore) {}

@@ -127,6 +127,7 @@ Deployment commit: `ba8e3fa`
 - [x] Present manual entry and live timer controls in one My Hours-style composer.
 - [x] Add dismiss/reopen controls and larger touch targets for the composer.
 - [x] Apply a dark, My Hours-inspired visual system with high-contrast touch controls.
+- [x] Collapse the time-log form into an active task bar while a timer is running.
 - [x] Run compatibility, DOM, and ES5 checks.
 - [ ] Complete interactive desktop browser verification.
 - [ ] Deploy Phase 6 version 6.0.0 to GitHub Pages.

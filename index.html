@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.4.0">
+    <link rel="stylesheet" href="css/app.css?v=6.5.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,7 +30,7 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v6.4.0</span>
+      <span id="version-label" class="version-label">v6.5.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
@@ -264,14 +264,20 @@
             </div>
           </div>
           <label class="timer-label timer-assignment-fields" for="timer-description">Description</label>
-          <textarea id="timer-description" maxlength="500" rows="2" placeholder="What are you working on?"></textarea>
+          <textarea id="timer-description" class="timer-assignment-fields" maxlength="500" rows="2" aria-hidden="true"></textarea>
           <label class="timer-billable timer-assignment-fields" for="timer-billable">
             <input id="timer-billable" type="checkbox" checked>
             Billable
           </label>
-          <div id="timer-display" class="timer-display" aria-live="off">00:00:00</div>
-          <p id="timer-state" class="timer-state">Ready to start</p>
-          <div class="timer-actions">
+          <div id="active-timer-bar" class="active-timer-bar is-hidden">
+            <div class="active-timer-task"><span id="active-timer-project"></span><span id="active-timer-task"></span></div>
+            <strong id="timer-display" class="active-timer-display" aria-live="off">00:00:00</strong>
+            <span id="timer-state" class="active-timer-state">Running</span>
+            <button id="active-timer-toggle" class="button button-primary" type="button">Pause</button>
+            <button id="active-timer-save" class="button" type="button">Stop &amp; save</button>
+            <button id="active-timer-reset" class="button button-danger" type="button">Cancel</button>
+          </div>
+          <div id="timer-actions" class="timer-actions">
             <button id="timer-toggle" class="button button-primary timer-main-button" type="button">Start timer</button>
             <button id="timer-save" class="button" type="button" disabled>Stop &amp; save</button>
             <button id="timer-reset" class="button button-danger" type="button" disabled>Cancel timer</button>
@@ -327,12 +333,12 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=6.4.0"></script>
-    <script src="js/timer.js?v=6.4.0"></script>
-    <script src="js/domain.js?v=6.4.0"></script>
-    <script src="js/product.js?v=6.4.0"></script>
-    <script src="js/weekly.js?v=6.4.0"></script>
-    <script src="js/backup.js?v=6.4.0"></script>
-    <script src="js/app.js?v=6.4.0"></script>
+    <script src="js/storage.js?v=6.5.0"></script>
+    <script src="js/timer.js?v=6.5.0"></script>
+    <script src="js/domain.js?v=6.5.0"></script>
+    <script src="js/product.js?v=6.5.0"></script>
+    <script src="js/weekly.js?v=6.5.0"></script>
+    <script src="js/backup.js?v=6.5.0"></script>
+    <script src="js/app.js?v=6.5.0"></script>
   </body>
 </html>
