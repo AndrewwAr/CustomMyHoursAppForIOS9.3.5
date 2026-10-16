@@ -501,6 +501,7 @@ label {
 
 .timer-panel {
   text-align: center;
+  margin-bottom: 18px;
 }
 
 .timer-panel h2,

@@ -123,6 +123,7 @@ Deployment commit: `ba8e3fa`
 - [x] Add global error capture to the diagnostics report.
 - [x] Add a recoverable safe-mode reload path.
 - [x] Improve legacy-Safari guidance around local backups.
+- [x] Merge the timer panel into Today for a single daily workflow.
 - [x] Run compatibility, DOM, and ES5 checks.
 - [ ] Complete interactive desktop browser verification.
 - [ ] Deploy Phase 6 version 6.0.0 to GitHub Pages.

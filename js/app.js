@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.0.0-phase6";
+  var APP_VERSION = "6.1.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -190,7 +190,7 @@
   }
 
   function setActiveView(name) {
-    var names = ["today", "projects", "timer", "week", "records", "diagnostics"];
+    var names = ["today", "projects", "week", "records", "diagnostics"];
     var index;
 
     for (index = 0; index < names.length; index += 1) {
@@ -205,9 +205,6 @@
 
     if (name === "diagnostics") {
       renderDiagnostics();
-    } else if (name === "timer") {
-      renderTimer();
-      renderTimerAssignment(data.timer);
     } else if (name === "week") {
       window.MHWeekly.render();
     } else if (name === "today" || name === "projects") {
@@ -549,9 +546,6 @@
     byId("nav-records").onclick = function () {
       setActiveView("records");
     };
-    byId("nav-timer").onclick = function () {
-      setActiveView("timer");
-    };
     byId("nav-week").onclick = function () {
       setActiveView("week");
     };
@@ -618,6 +612,9 @@
       };
       setNotice("error", error.message + " Open Diagnostics for details.");
     }
+
+    byId("timer-view").className = "panel timer-panel";
+    byId("today-view").insertBefore(byId("timer-view"), byId("today-view").firstChild);
 
     setText(byId("version-label"), "v" + APP_VERSION);
     try {

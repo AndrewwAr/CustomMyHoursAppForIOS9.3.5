@@ -12,6 +12,7 @@ features are introduced. Phase 2 adds manual time tracking. Phase 3 connects the
 persistent timer to projects, tasks, and exact-second time entries. Phase 4 adds
 weekly navigation, daily totals, filters, and edit access from the weekly view.
 Phase 5 adds local JSON backup, restore, and CSV export.
+Phase 6 also combines the live timer and Today workflow on one screen.
 
 ## Phase 5 physical iPad test
 
