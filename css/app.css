@@ -89,33 +89,55 @@ textarea {
 }
 
 .app-nav {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 18px;
-  border-bottom: 1px solid #cbd5db;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 214px;
+  padding: 22px 14px;
+  border-right: 1px solid #cbd5db;
   background: #ffffff;
-  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.sidebar-title {
+  margin: 0 8px 28px;
+  color: #173c50;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .nav-button {
-  margin: 0 12px 0 0;
-  padding: 0 13px;
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  margin: 4px 0;
+  padding: 0 14px;
   border: 0;
-  border-bottom: 4px solid transparent;
+  border-left: 4px solid transparent;
+  border-radius: 5px;
   background: transparent;
   color: #435967;
+  text-align: left;
   font-weight: bold;
 }
 
 .nav-button.is-active {
-  border-bottom-color: #3b9e7a;
+  border-left-color: #3b9e7a;
+  background: #e7f7f0;
   color: #173c50;
 }
 
 .page-shell {
   max-width: 920px;
-  margin: 0 auto;
+  margin: 0 auto 0 214px;
   padding: 18px;
+}
+
+.app-header,
+.app-footer {
+  margin-left: 214px;
 }
 
 .notice {
@@ -680,6 +702,7 @@ body {
 
 .nav-button { color: #9dafbb; }
 .nav-button.is-active { border-bottom-color: #35c58b; color: #f1f6f8; }
+.sidebar-title { color: #f1f6f8; }
 
 .panel {
   border-color: #2b3945;
@@ -784,6 +807,11 @@ label { color: #d8e1e7; }
 }
 
 @media only screen and (max-width: 560px) {
+  .app-nav { width: 168px; padding-left: 9px; padding-right: 9px; }
+  .app-header, .app-footer { margin-left: 168px; }
+  .page-shell { margin-left: 168px; padding: 12px; }
+  .sidebar-title { margin-left: 5px; font-size: 18px; }
+  .nav-button { padding-left: 9px; font-size: 14px; }
   .app-header {
     padding-right: 18px;
   }
