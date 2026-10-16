@@ -125,6 +125,7 @@ Deployment commit: `ba8e3fa`
 - [x] Improve legacy-Safari guidance around local backups.
 - [x] Merge the timer panel into Today for a single daily workflow.
 - [x] Present manual entry and live timer controls in one My Hours-style composer.
+- [x] Add dismiss/reopen controls and larger touch targets for the composer.
 - [x] Run compatibility, DOM, and ES5 checks.
 - [ ] Complete interactive desktop browser verification.
 - [ ] Deploy Phase 6 version 6.0.0 to GitHub Pages.

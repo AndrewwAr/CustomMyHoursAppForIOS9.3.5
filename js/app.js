@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.2.0-phase6";
+  var APP_VERSION = "6.3.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -239,6 +239,19 @@
     }
   }
 
+  function showComposer() {
+    show(byId("timer-view"));
+    hide(byId("new-time-log"));
+  }
+
+  function dismissComposer() {
+    if (data.timer && data.timer.status === "running") {
+      setNotice("info", "The timer is still running in the background. Reopen the time log to manage it.");
+    }
+    hide(byId("timer-view"));
+    show(byId("new-time-log"));
+  }
+
   function appendTimerOption(select, value, label, selected) {
     var option = document.createElement("option");
     option.value = value;
@@ -310,11 +323,13 @@
       reset.disabled = true;
       save.disabled = true;
     } else if (timer.status === "running") {
+      showComposer();
       setText(byId("timer-state"), "Running - saved on this device");
       setText(toggle, "Pause timer");
       reset.disabled = false;
       save.disabled = false;
     } else {
+      showComposer();
       setText(byId("timer-state"), "Paused - elapsed time is saved");
       setText(toggle, "Resume timer");
       reset.disabled = false;
@@ -575,6 +590,9 @@
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
+    byId("new-time-log").onclick = showComposer;
+    byId("composer-dismiss").onclick = dismissComposer;
+    byId("composer-dismiss-action").onclick = dismissComposer;
     byId("dismiss-guide").onclick = function () {
       byId("first-run-guide").className += " is-hidden";
       try { window.localStorage.setItem("myhours-custom.guide-seen", "yes"); } catch (ignore) {}

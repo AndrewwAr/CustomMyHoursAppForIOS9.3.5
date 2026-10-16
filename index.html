@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.2.0">
+    <link rel="stylesheet" href="css/app.css?v=6.3.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,7 +30,7 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v6.2.0</span>
+      <span id="version-label" class="version-label">v6.3.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
@@ -59,10 +59,11 @@
         </div>
         <div class="panel">
           <div class="panel-heading-row wide-heading-row">
-            <h2 id="today-heading">Manual time entry</h2>
+            <h2 id="today-heading">Today</h2>
             <label class="date-filter-label" for="selected-date">Day</label>
             <input id="selected-date" class="date-filter" type="date">
           </div>
+          <button id="new-time-log" class="button button-primary is-hidden" type="button">+ Add time log</button>
 
           <form id="entry-form" novalidate>
             <input id="entry-id" type="hidden">
@@ -100,7 +101,7 @@
             <textarea id="entry-description" maxlength="500" rows="3" placeholder="What did you work on?"></textarea>
             <p id="entry-error" class="field-error" role="alert"></p>
             <div class="button-row">
-              <button id="entry-submit" class="button button-primary" type="submit">Add time entry</button>
+              <button id="entry-submit" class="button button-primary" type="submit">Add time log</button>
               <button id="entry-cancel" class="button is-hidden" type="button">Cancel editing</button>
             </div>
           </form>
@@ -250,7 +251,7 @@
 
       <section id="timer-view" class="view-panel is-hidden" aria-labelledby="timer-heading">
         <div class="panel timer-panel">
-          <h2 id="timer-heading">Add time log</h2>
+          <div class="composer-heading"><h2 id="timer-heading">Add time log</h2><button id="composer-dismiss" class="composer-close" type="button" aria-label="Dismiss time log form">×</button></div>
           <p class="intro-copy">Choose the work first. The timer and its assignment are saved on this device while Safari is closed, backgrounded, or the iPad is asleep.</p>
           <div class="field-row two-columns timer-fields timer-assignment-fields">
             <div class="field-column">
@@ -274,6 +275,7 @@
             <button id="timer-toggle" class="button button-primary timer-main-button" type="button">Start timer</button>
             <button id="timer-save" class="button" type="button" disabled>Stop &amp; save</button>
             <button id="timer-reset" class="button button-danger" type="button" disabled>Cancel timer</button>
+            <button id="composer-dismiss-action" class="button" type="button">Dismiss</button>
           </div>
           <p id="timer-error" class="field-error" role="alert"></p>
         </div>
@@ -325,12 +327,12 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=6.2.0"></script>
-    <script src="js/timer.js?v=6.2.0"></script>
-    <script src="js/domain.js?v=6.2.0"></script>
-    <script src="js/product.js?v=6.2.0"></script>
-    <script src="js/weekly.js?v=6.2.0"></script>
-    <script src="js/backup.js?v=6.2.0"></script>
-    <script src="js/app.js?v=6.2.0"></script>
+    <script src="js/storage.js?v=6.3.0"></script>
+    <script src="js/timer.js?v=6.3.0"></script>
+    <script src="js/domain.js?v=6.3.0"></script>
+    <script src="js/product.js?v=6.3.0"></script>
+    <script src="js/weekly.js?v=6.3.0"></script>
+    <script src="js/backup.js?v=6.3.0"></script>
+    <script src="js/app.js?v=6.3.0"></script>
   </body>
 </html>

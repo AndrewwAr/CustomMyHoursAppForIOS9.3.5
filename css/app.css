@@ -502,6 +502,35 @@ label {
 .timer-panel {
   text-align: center;
   margin-bottom: 18px;
+  border-top: 4px solid #3b9e7a;
+}
+
+.composer-heading {
+  position: relative;
+  min-height: 34px;
+}
+
+.composer-heading h2 {
+  margin: 0;
+  text-align: left;
+}
+
+.composer-close {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #435967;
+  font-size: 30px;
+  line-height: 38px;
+}
+
+#new-time-log {
+  margin: 0 0 16px;
 }
 
 .timer-panel h2,
@@ -555,6 +584,7 @@ label {
 
 .timer-actions .button {
   min-width: 130px;
+  min-height: 42px;
   margin: 0 5px 8px;
 }
 
