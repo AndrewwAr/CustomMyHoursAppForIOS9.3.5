@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.1.0-phase6";
+  var APP_VERSION = "6.2.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -283,6 +283,11 @@
       byId("timer-description").value = timer.description;
       byId("timer-billable").checked = timer.billable;
     }
+    byId("entry-project").value = projectId;
+    fillTimerTasks(projectId, taskId);
+    byId("entry-task").value = taskId || "";
+    byId("entry-description").value = timer ? timer.description : byId("entry-description").value;
+    byId("entry-billable").checked = timer ? timer.billable : byId("entry-billable").checked;
     byId("timer-project").disabled = locked;
     byId("timer-task").disabled = locked;
     byId("timer-description").disabled = locked;
@@ -442,6 +447,21 @@
     fillTimerTasks(byId("timer-project").value, "");
   }
 
+  function syncTimerFromEntry() {
+    var projectId = byId("entry-project").value;
+    var taskId = byId("entry-task").value;
+    if (window.MHProduct && window.MHProduct.renderAll) {
+      window.MHProduct.renderAll();
+      byId("entry-project").value = projectId;
+      byId("entry-task").value = taskId;
+    }
+    byId("timer-project").value = byId("entry-project").value;
+    fillTimerTasks(byId("timer-project").value, byId("entry-task").value);
+    byId("timer-task").value = byId("entry-task").value;
+    byId("timer-description").value = byId("entry-description").value;
+    byId("timer-billable").checked = byId("entry-billable").checked;
+  }
+
   function diagnosticValues() {
     var startupErrors = window.__mhStartupErrors || [];
     var standalone = window.navigator.standalone === true ? "Yes" : "No";
@@ -563,6 +583,10 @@
     byId("timer-save").onclick = stopAndSaveTimer;
     byId("timer-reset").onclick = resetTimer;
     byId("timer-project").onchange = changeTimerProject;
+    byId("entry-project").onchange = syncTimerFromEntry;
+    byId("entry-task").onchange = syncTimerFromEntry;
+    byId("entry-description").onchange = syncTimerFromEntry;
+    byId("entry-billable").onchange = syncTimerFromEntry;
     document.addEventListener("visibilitychange", function () {
       if (!document.hidden) {
         renderTimer();
@@ -580,6 +604,8 @@
 
   function boot() {
     var browserStorage;
+    var entryPanel;
+    var timerCard;
 
     if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly || !window.MHBackup) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
@@ -613,8 +639,12 @@
       setNotice("error", error.message + " Open Diagnostics for details.");
     }
 
+    entryPanel = byId("entry-form").parentNode;
+    timerCard = byId("timer-view").getElementsByTagName("div")[0];
     byId("timer-view").className = "panel timer-panel";
     byId("today-view").insertBefore(byId("timer-view"), byId("today-view").firstChild);
+    timerCard.appendChild(byId("entry-form"));
+    entryPanel.className += " is-hidden";
 
     setText(byId("version-label"), "v" + APP_VERSION);
     try {

@@ -515,6 +515,19 @@ label {
   text-align: left;
 }
 
+.timer-assignment-fields {
+  display: none;
+}
+
+.timer-panel > form {
+  margin: 16px 0 0;
+  text-align: left;
+}
+
+.timer-panel > form .button-row {
+  margin-bottom: 4px;
+}
+
 .timer-billable {
   display: block;
   margin-top: 12px;

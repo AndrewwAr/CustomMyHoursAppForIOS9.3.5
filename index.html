@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.1.0">
+    <link rel="stylesheet" href="css/app.css?v=6.2.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,7 +30,7 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v6.1.0</span>
+      <span id="version-label" class="version-label">v6.2.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
@@ -250,9 +250,9 @@
 
       <section id="timer-view" class="view-panel is-hidden" aria-labelledby="timer-heading">
         <div class="panel timer-panel">
-          <h2 id="timer-heading">Track time today</h2>
+          <h2 id="timer-heading">Add time log</h2>
           <p class="intro-copy">Choose the work first. The timer and its assignment are saved on this device while Safari is closed, backgrounded, or the iPad is asleep.</p>
-          <div class="field-row two-columns timer-fields">
+          <div class="field-row two-columns timer-fields timer-assignment-fields">
             <div class="field-column">
               <label for="timer-project">Project</label>
               <select id="timer-project"></select>
@@ -262,9 +262,9 @@
               <select id="timer-task"></select>
             </div>
           </div>
-          <label class="timer-label" for="timer-description">Description</label>
+          <label class="timer-label timer-assignment-fields" for="timer-description">Description</label>
           <textarea id="timer-description" maxlength="500" rows="2" placeholder="What are you working on?"></textarea>
-          <label class="timer-billable" for="timer-billable">
+          <label class="timer-billable timer-assignment-fields" for="timer-billable">
             <input id="timer-billable" type="checkbox" checked>
             Billable
           </label>
@@ -325,12 +325,12 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=6.1.0"></script>
-    <script src="js/timer.js?v=6.1.0"></script>
-    <script src="js/domain.js?v=6.1.0"></script>
-    <script src="js/product.js?v=6.1.0"></script>
-    <script src="js/weekly.js?v=6.1.0"></script>
-    <script src="js/backup.js?v=6.1.0"></script>
-    <script src="js/app.js?v=6.1.0"></script>
+    <script src="js/storage.js?v=6.2.0"></script>
+    <script src="js/timer.js?v=6.2.0"></script>
+    <script src="js/domain.js?v=6.2.0"></script>
+    <script src="js/product.js?v=6.2.0"></script>
+    <script src="js/weekly.js?v=6.2.0"></script>
+    <script src="js/backup.js?v=6.2.0"></script>
+    <script src="js/app.js?v=6.2.0"></script>
   </body>
 </html>
