@@ -638,6 +638,75 @@ label {
   margin: 0;
 }
 
+/* Dark My Hours-inspired theme. Keep selectors broad and dependency-free for iOS 9. */
+body {
+  background: #0f151b;
+  color: #d8e1e7;
+}
+
+.app-header {
+  background: #151e27;
+  border-bottom: 1px solid #2b3945;
+}
+
+.brand-mark {
+  background: #35c58b;
+  color: #092017;
+}
+
+.brand-copy p { color: #91a4b2; }
+.version-label { border-color: #3d5362; color: #b9c8d1; }
+
+.app-nav {
+  border-bottom-color: #2b3945;
+  background: #18232d;
+}
+
+.nav-button { color: #9dafbb; }
+.nav-button.is-active { border-bottom-color: #35c58b; color: #f1f6f8; }
+
+.panel {
+  border-color: #2b3945;
+  background: #1a252f;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.panel h2 { color: #f1f6f8; }
+.panel h3 { color: #d8e1e7; }
+.intro-copy, .timer-state, .entry-description, .entry-meta, .record-date { color: #93a6b3; }
+
+input, textarea, select {
+  border-color: #435563;
+  background: #121b23;
+  color: #e4edf1;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #35c58b;
+  outline: 2px solid rgba(53, 197, 139, 0.22);
+}
+
+label { color: #d8e1e7; }
+.button { border-color: #496071; background: #253440; color: #e4edf1; }
+.button:active { background: #304452; }
+.button-primary { border-color: #35c58b; background: #35c58b; color: #081a12; }
+.button-primary:active { background: #2aa878; }
+.button-danger { border-color: #b85c68; background: #472b34; color: #ffd9dd; }
+.button[disabled] { border-color: #374650; background: #212c35; color: #71818c; }
+
+.timer-panel { border-top-color: #35c58b; }
+.timer-display { color: #f1f6f8; }
+.total-badge { background: #173e32; color: #78e3b5; }
+.entry-item, .record-item, .diagnostic-row { border-color: #2b3945; }
+.entry-title, .record-note { color: #f1f6f8; }
+.empty-state { border-color: #3b4c58; background: #17212a; color: #9dafbb; }
+.notice-success { border-color: #287d60; background: #15382d; color: #9bf0c7; }
+.notice-info { border-color: #35657c; background: #152c39; color: #a8d9ef; }
+.notice-error { border-color: #8b4954; background: #3a2028; color: #ffc4cb; }
+.test-checklist { background: #17212a; }
+.diagnostic-output { border-color: #435563; background: #121b23; color: #e4edf1; }
+.app-footer { color: #71818c; }
+
 .button[disabled] {
   border-color: #c8d0d4;
   background: #e8edef;
