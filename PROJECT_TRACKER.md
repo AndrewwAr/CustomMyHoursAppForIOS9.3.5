@@ -12,7 +12,7 @@ Last updated: 2026-10-16
 | Phase 3 — timer-to-time-entry workflow | Complete | Passed |
 | Phase 4 — weekly timesheet and reporting | Complete | Passed |
 | Phase 5 — backup, restore, and export | In progress | Not tested |
-| Phase 6 — product hardening | Not started | Not tested |
+| Phase 6 — product hardening | In progress | Not tested |
 
 ## Completed work
 
@@ -116,6 +116,17 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [ ] Complete the Phase 5 physical iPad checklist.
 
 Deployment commit: `ba8e3fa`
+
+## Phase 6 implementation
+
+- [x] Add first-run guidance for an empty local workspace.
+- [x] Add global error capture to the diagnostics report.
+- [x] Add a recoverable safe-mode reload path.
+- [x] Improve legacy-Safari guidance around local backups.
+- [x] Run compatibility, DOM, and ES5 checks.
+- [ ] Complete interactive desktop browser verification.
+- [ ] Deploy Phase 6 version 6.0.0 to GitHub Pages.
+- [ ] Complete the Phase 6 physical iPad checklist.
 
 ## Working agreement
 

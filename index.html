@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=5.0.4">
+    <link rel="stylesheet" href="css/app.css?v=6.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -30,7 +30,7 @@
         <h1>My Hours Custom</h1>
         <p>Legacy iPad compatibility build</p>
       </div>
-      <span id="version-label" class="version-label">v5.0.0</span>
+      <span id="version-label" class="version-label">v6.0.0</span>
     </header>
 
     <nav class="app-nav" aria-label="Main navigation">
@@ -52,6 +52,12 @@
       </noscript>
 
       <section id="today-view" class="view-panel" aria-labelledby="today-heading">
+        <div id="first-run-guide" class="panel first-run-guide is-hidden">
+          <h2>Welcome to your local time tracker</h2>
+          <p>Create a project, add a task, then use <strong>Timer</strong> for live work or add an entry directly in <strong>Today</strong>. Your data stays in this Safari profile.</p>
+          <p>Use <strong>Diagnostics</strong> to export a backup before clearing Safari website data.</p>
+          <button id="dismiss-guide" class="button" type="button">Got it</button>
+        </div>
         <div class="panel">
           <div class="panel-heading-row wide-heading-row">
             <h2 id="today-heading">Manual time entry</h2>
@@ -296,6 +302,7 @@
             <button id="refresh-diagnostics" class="button" type="button">Refresh report</button>
             <button id="copy-diagnostics" class="button button-primary" type="button">Copy report</button>
           </div>
+          <button id="safe-mode" class="button" type="button">Reload in safe mode</button>
           <h3>Backup and export</h3>
           <p class="intro-copy">All data stays on this device. Export a backup before clearing Safari data or moving to another device.</p>
           <div class="button-row">
@@ -319,12 +326,12 @@
       Data is stored only in Safari on this device. Clearing Safari website data will remove it.
     </footer>
 
-    <script src="js/storage.js?v=5.0.0"></script>
-    <script src="js/timer.js?v=5.0.0"></script>
-    <script src="js/domain.js?v=5.0.0"></script>
-    <script src="js/product.js?v=5.0.0"></script>
-    <script src="js/weekly.js?v=5.0.0"></script>
-    <script src="js/backup.js?v=5.0.0"></script>
-    <script src="js/app.js?v=5.0.0"></script>
+    <script src="js/storage.js?v=6.0.0"></script>
+    <script src="js/timer.js?v=6.0.0"></script>
+    <script src="js/domain.js?v=6.0.0"></script>
+    <script src="js/product.js?v=6.0.0"></script>
+    <script src="js/weekly.js?v=6.0.0"></script>
+    <script src="js/backup.js?v=6.0.0"></script>
+    <script src="js/app.js?v=6.0.0"></script>
   </body>
 </html>

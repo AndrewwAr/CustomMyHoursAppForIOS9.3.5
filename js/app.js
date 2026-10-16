@@ -1,12 +1,13 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "5.0.4-phase5";
+  var APP_VERSION = "6.0.0-phase6";
   var repository;
   var data;
   var storageStatus;
   var bootTime = new Date();
   var timerRefreshId = null;
+  var safeMode = /(?:\?|&)safe=1(?:&|$)/.test(window.location.search || "");
 
   function byId(id) {
     return document.getElementById(id);
@@ -35,6 +36,16 @@
     notice.className = "notice notice-" + type;
     setText(notice, message);
   }
+
+  window.onerror = function (message, source, line) {
+    var errors = window.__mhStartupErrors || [];
+    errors.push(String(message) + (source ? " (" + source + ":" + line + ")" : ""));
+    window.__mhStartupErrors = errors.slice(-5);
+    if (byId("startup-message")) {
+      setNotice("error", "The app caught an error. Open Diagnostics, export a backup, then reload or use safe mode.");
+    }
+    return false;
+  };
 
   function formatDate(value) {
     var date = new Date(value);
@@ -549,6 +560,11 @@
     };
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
+    byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
+    byId("dismiss-guide").onclick = function () {
+      byId("first-run-guide").className += " is-hidden";
+      try { window.localStorage.setItem("myhours-custom.guide-seen", "yes"); } catch (ignore) {}
+    };
     byId("timer-toggle").onclick = toggleTimer;
     byId("timer-save").onclick = stopAndSaveTimer;
     byId("timer-reset").onclick = resetTimer;
@@ -604,6 +620,11 @@
     }
 
     setText(byId("version-label"), "v" + APP_VERSION);
+    try {
+      if (!safeMode && !window.localStorage.getItem("myhours-custom.guide-seen") && !data.records.length && !data.projects.length && !data.timeEntries.length) {
+        byId("first-run-guide").className = byId("first-run-guide").className.replace(/\bis-hidden\b/g, "");
+      }
+    } catch (guideError) {}
     window.MHProduct.init({
       data: data,
       repository: repository,
@@ -640,6 +661,11 @@
     renderDiagnostics();
     bindEvents();
     startTimerRefresh();
+
+    if (safeMode) {
+      stopTimerRefresh();
+      setNotice("info", "Safe mode is active. Your data is available for backup and diagnostics; automatic timer refresh is paused.");
+    }
 
     if (storageStatus.available && data.timer) {
       setNotice("success", "Recovered your " + data.timer.status + " timer from this device.");

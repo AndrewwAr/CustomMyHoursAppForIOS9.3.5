@@ -181,6 +181,8 @@ The user can recover data if Safari storage is cleared or the iPad is replaced.
 
 ## Phase 6 — Product hardening and release
 
+Implementation status: in progress for version 6.0.0.
+
 ### User outcome
 
 The application feels dependable as a home-screen utility on the old iPad.
