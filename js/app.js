@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.1.2-phase6";
+  var APP_VERSION = "7.1.3-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -406,7 +406,7 @@
     try {
       fillFavoriteProjects("");
       fillFavoriteTasks("", "");
-      text(byId("favorite-error"), "");
+      setText(byId("favorite-error"), "");
       show(byId("favorite-modal"));
     } catch (error) {
       setNotice("error", "Unable to open the favorite form: " + error.message);
