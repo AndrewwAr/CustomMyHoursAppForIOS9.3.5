@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.9.1-phase6";
+  var APP_VERSION = "6.9.2-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -786,7 +786,7 @@
     if (storageStatus.available && data.timer) {
       setNotice("success", "Recovered your " + data.timer.status + " timer from this device.");
     } else if (storageStatus.available) {
-      setNotice("success", "Compatibility check passed. JavaScript and local storage are working.");
+      hide(byId("startup-message"));
     } else {
       setNotice("error", "The app loaded, but local storage is unavailable: " + storageStatus.message);
     }
