@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.7.4">
+    <link rel="stylesheet" href="css/app.css?v=6.7.5">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&times;</button>
-      <span id="version-label" class="version-label">v6.7.4</span>
+      <span id="version-label" class="version-label">v6.7.5</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -92,7 +92,7 @@
                 <input id="entry-end" type="text" placeholder="End time...">
                 <label class="sr-only" for="selected-date">Date</label>
                 <input id="selected-date" class="date-filter" type="date" aria-label="Date">
-                <label class="composer-billable" for="entry-billable"><input id="entry-billable" type="checkbox" checked> Billable</label>
+                <input id="entry-billable" class="is-hidden" type="checkbox" checked>
               </div>
             </div>
             <p id="entry-error" class="field-error" role="alert"></p>
