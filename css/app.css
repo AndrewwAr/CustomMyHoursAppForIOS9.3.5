@@ -581,7 +581,10 @@ label {
 
 .timer-panel {
   text-align: center;
-  margin-bottom: 18px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 18px;
+  box-sizing: border-box;
   border-top: 4px solid #3b9e7a;
 }
 
