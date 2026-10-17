@@ -1,13 +1,40 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.6.1-phase6";
+  var APP_VERSION = "6.6.2-phase6";
   var repository;
   var data;
   var storageStatus;
   var bootTime = new Date();
   var timerRefreshId = null;
   var safeMode = /(?:\?|&)safe=1(?:&|$)/.test(window.location.search || "");
+
+  function setSidebarCollapsed(collapsed) {
+    var body = document.body;
+    var toggle = byId("sidebar-toggle");
+    var className = body.className || "";
+    var hasClass = (" " + className + " ").indexOf(" sidebar-collapsed ") !== -1;
+
+    if (collapsed && !hasClass) {
+      body.className = (className + " sidebar-collapsed").replace(/^\s+/, "");
+    } else if (!collapsed && hasClass) {
+      body.className = className.replace(/(?:^|\s)sidebar-collapsed(?:\s|$)/g, " ").replace(/^\s+|\s+$/g, "");
+    }
+
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      toggle.setAttribute("aria-label", collapsed ? "Show navigation" : "Hide navigation");
+      setText(toggle, collapsed ? "☰" : "×");
+    }
+  }
+
+  function toggleSidebar() {
+    var collapsed = (" " + (document.body.className || "") + " ").indexOf(" sidebar-collapsed ") !== -1;
+    setSidebarCollapsed(!collapsed);
+    try {
+      window.localStorage.setItem("myhours-custom.sidebar-collapsed", collapsed ? "no" : "yes");
+    } catch (ignore) {}
+  }
 
   function byId(id) {
     return document.getElementById(id);
@@ -608,6 +635,7 @@
     byId("nav-diagnostics").onclick = function () {
       setActiveView("diagnostics");
     };
+    byId("sidebar-toggle").onclick = toggleSidebar;
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
@@ -652,6 +680,12 @@
     if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly || !window.MHBackup) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
       return;
+    }
+
+    try {
+      setSidebarCollapsed(window.localStorage.getItem("myhours-custom.sidebar-collapsed") === "yes");
+    } catch (sidebarError) {
+      setSidebarCollapsed(false);
     }
 
     try {
