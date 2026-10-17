@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.8.2-phase6";
+  var APP_VERSION = "6.9.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -268,6 +268,9 @@
 
   function showComposer() {
     show(byId("timer-view"));
+    if (!data || !data.timer) {
+      setTimerFormCollapsed(false);
+    }
     hide(byId("new-time-log"));
   }
 
@@ -357,7 +360,7 @@
     setText(byId("timer-error"), "");
 
     if (!timer) {
-      setTimerFormCollapsed(false);
+      setTimerFormCollapsed(true);
       setText(byId("timer-state"), "Ready to start");
       setText(toggle, "Start timer");
       hide(save);

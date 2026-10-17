@@ -360,6 +360,50 @@ label {
   padding-right: 230px;
 }
 
+.track-toolbar {
+  position: relative;
+  min-height: 76px;
+  padding: 0 0 14px;
+}
+
+.track-toolbar h2 {
+  margin: 0 0 14px;
+  color: #f1f6f8;
+  font-size: 30px;
+}
+
+.track-toolbar .button-primary {
+  margin-right: 8px;
+}
+
+.track-toolbar-icons {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.toolbar-icon {
+  width: 44px;
+  min-height: 38px;
+  margin-right: 8px;
+  padding: 0;
+  border: 1px solid #2b3945;
+  border-radius: 5px;
+  background: #202d38;
+  color: #d8e1e7;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.toolbar-icon:hover,
+.toolbar-icon:focus {
+  border-color: #35c58b;
+  background: #245541;
+  color: #ffffff;
+  outline: 0;
+}
+
 .date-filter-label {
   position: absolute;
   top: 10px;
@@ -1056,6 +1100,13 @@ label { color: #d8e1e7; }
 
   .wide-heading-row {
     padding-right: 0;
+  }
+
+  .track-toolbar h2 { font-size: 24px; }
+
+  .track-toolbar .button-primary {
+    display: block;
+    margin-bottom: 8px;
   }
 
   .date-filter-label,
