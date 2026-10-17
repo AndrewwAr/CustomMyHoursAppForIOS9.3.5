@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.2.0-phase6";
+  var APP_VERSION = "7.3.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -928,6 +928,13 @@
     byId("date-previous").onclick = function () { moveSelectedDate(-1); };
     byId("date-next").onclick = function () { moveSelectedDate(1); };
     byId("date-today").onclick = selectToday;
+    byId("group-logs").onclick = function () {
+      var button = byId("group-logs");
+      var active = (" " + button.className + " ").indexOf(" is-selected ") !== -1;
+      window.MHProduct.setGroupedView(!active);
+      button.className = active ? "toolbar-icon" : "toolbar-icon is-selected";
+      button.setAttribute("aria-pressed", active ? "false" : "true");
+    };
     byId("show-favorites").onclick = function () {
       var panel = byId("favorites-panel");
       var hidden = (" " + panel.className + " ").indexOf(" is-hidden ") !== -1;

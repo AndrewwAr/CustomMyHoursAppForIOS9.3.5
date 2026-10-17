@@ -2,6 +2,7 @@
   "use strict";
 
   var state;
+  var groupedView = false;
 
   function byId(id) {
     return document.getElementById(id);
@@ -502,6 +503,9 @@
     var duration;
     var actions;
     var index;
+    var groups;
+    var group;
+    var groupKey;
 
     state.data.settings.selectedDate = selectedDate;
     byId("selected-date").value = selectedDate;
@@ -509,6 +513,45 @@
     text(byId("day-total"), state.domain.formatDurationSeconds(state.domain.totalForDate(state.data.timeEntries, selectedDate)));
     clearChildren(list);
     entries.length ? hide(byId("entries-empty")) : show(byId("entries-empty"));
+
+    if (groupedView) {
+      groups = [];
+      for (index = 0; index < entries.length; index += 1) {
+        groupKey = entries[index].projectId + "|" + (entries[index].taskId || "");
+        group = null;
+        for (var groupIndex = 0; groupIndex < groups.length; groupIndex += 1) {
+          if (groups[groupIndex].key === groupKey) { group = groups[groupIndex]; break; }
+        }
+        if (!group) {
+          group = { key: groupKey, entry: entries[index], seconds: 0, count: 0 };
+          groups.push(group);
+        }
+        group.seconds += entries[index].durationSeconds;
+        group.count += 1;
+      }
+      for (index = 0; index < groups.length; index += 1) {
+        group = groups[index];
+        project = state.domain.findById(state.data.projects, group.entry.projectId);
+        task = group.entry.taskId ? state.domain.findById(state.data.tasks, group.entry.taskId) : null;
+        item = document.createElement("li");
+        item.className = "entry-item grouped-entry";
+        item.style.borderLeftColor = project ? project.color : "#667985";
+        title = document.createElement("span");
+        title.className = "entry-title";
+        text(title, (project ? project.name : "Unknown project") + (task ? " / " + task.name : ""));
+        description = document.createElement("span");
+        description.className = "entry-description";
+        text(description, String(group.count) + " log" + (group.count === 1 ? "" : "s") + " grouped");
+        duration = document.createElement("span");
+        duration.className = "entry-duration";
+        text(duration, state.domain.formatDurationSeconds(group.seconds));
+        item.appendChild(title);
+        item.appendChild(description);
+        item.appendChild(duration);
+        list.appendChild(item);
+      }
+      return;
+    }
 
     for (index = 0; index < entries.length; index += 1) {
       entry = entries[index];
@@ -632,6 +675,7 @@
   root.MHProduct = {
     init: init,
     renderAll: renderAll,
+    setGroupedView: function (enabled) { groupedView = !!enabled; renderEntries(); },
     editEntry: editEntry,
     replaceData: function (nextData) { state.data = nextData; renderAll(); }
   };

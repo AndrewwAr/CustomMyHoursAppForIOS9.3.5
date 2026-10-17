@@ -453,6 +453,8 @@ label {
   outline: 0;
 }
 
+.toolbar-icon.is-selected { border-color: #35c58b; background: #245541; color: #ffffff; }
+
 .favorites-panel {
   margin: 0 0 14px;
   padding: 0 0 4px;
