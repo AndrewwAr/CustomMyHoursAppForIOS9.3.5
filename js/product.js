@@ -126,6 +126,8 @@
     byId("entry-hours").value = "0";
     byId("entry-minutes").value = "0";
     byId("entry-seconds").value = "0";
+    byId("entry-start").value = "";
+    byId("entry-end").value = "";
     byId("entry-description").value = "";
     byId("entry-billable").checked = true;
     text(byId("entry-error"), "");
@@ -257,6 +259,8 @@
         existing.projectId = projectId;
         existing.taskId = taskId;
         existing.durationSeconds = duration.seconds;
+        existing.startTime = state.domain.trim(byId("entry-start").value);
+        existing.endTime = state.domain.trim(byId("entry-end").value);
         existing.description = state.domain.trim(byId("entry-description").value);
         existing.billable = byId("entry-billable").checked;
         existing.updatedAt = now;
@@ -267,6 +271,8 @@
           projectId: projectId,
           taskId: taskId,
           durationSeconds: duration.seconds,
+          startTime: state.domain.trim(byId("entry-start").value),
+          endTime: state.domain.trim(byId("entry-end").value),
           description: state.domain.trim(byId("entry-description").value),
           billable: byId("entry-billable").checked,
           createdAt: now,
@@ -319,6 +325,8 @@
     byId("entry-hours").value = String(Math.floor(entry.durationSeconds / 3600));
     byId("entry-minutes").value = String(Math.floor((entry.durationSeconds % 3600) / 60));
     byId("entry-seconds").value = String(entry.durationSeconds % 60);
+    byId("entry-start").value = entry.startTime || "";
+    byId("entry-end").value = entry.endTime || "";
     byId("entry-description").value = entry.description;
     byId("entry-billable").checked = entry.billable;
     text(byId("entry-submit"), "Save time entry");
@@ -366,6 +374,8 @@
         projectId: entry.projectId,
         taskId: entry.taskId,
         durationSeconds: entry.durationSeconds,
+        startTime: entry.startTime || "",
+        endTime: entry.endTime || "",
         description: entry.description,
         billable: entry.billable,
         createdAt: now,
