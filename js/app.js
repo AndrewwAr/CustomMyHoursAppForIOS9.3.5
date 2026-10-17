@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.1.1-phase6";
+  var APP_VERSION = "7.1.2-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -344,6 +344,8 @@
     var select = byId("favorite-project");
     var index;
     var project;
+    if (!select) { return; }
+    if (!data.projects) { data.projects = []; }
     while (select.firstChild) { select.removeChild(select.firstChild); }
     appendTimerOption(select, "", data.projects.length ? "Select a project" : "Create a project first", selectedId);
     for (index = 0; index < data.projects.length; index += 1) {
@@ -356,8 +358,11 @@
 
   function fillFavoriteTasks(projectId, selectedId) {
     var select = byId("favorite-task");
-    var tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
+    var tasks;
     var index;
+    if (!select) { return; }
+    if (!data.tasks) { data.tasks = []; }
+    tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
     while (select.firstChild) { select.removeChild(select.firstChild); }
     appendTimerOption(select, "", "No task", selectedId);
     for (index = 0; index < tasks.length; index += 1) {
@@ -398,10 +403,14 @@
   }
 
   function openFavoriteModal() {
-    fillFavoriteProjects("");
-    fillFavoriteTasks("", "");
-    text(byId("favorite-error"), "");
-    show(byId("favorite-modal"));
+    try {
+      fillFavoriteProjects("");
+      fillFavoriteTasks("", "");
+      text(byId("favorite-error"), "");
+      show(byId("favorite-modal"));
+    } catch (error) {
+      setNotice("error", "Unable to open the favorite form: " + error.message);
+    }
   }
 
   function closeFavoriteModal() {
