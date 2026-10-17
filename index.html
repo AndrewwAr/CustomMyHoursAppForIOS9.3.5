@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=7.1.4">
+    <link rel="stylesheet" href="css/app.css?v=7.2.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&#8592;</button>
-      <span id="version-label" class="version-label">v7.1.4</span>
+      <span id="version-label" class="version-label">v7.2.0</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -138,6 +138,15 @@
             <p id="favorite-error" class="field-error" role="alert"></p>
             <div class="button-row"><button class="button button-primary" type="submit">Add favorite</button><button id="favorite-cancel" class="button" type="button">Dismiss</button></div>
           </form>
+        </div>
+      </div>
+
+      <div id="favorite-editor-modal" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="favorite-editor-heading">
+        <div class="modal-card favorite-modal-card">
+          <div class="composer-heading"><h2 id="favorite-editor-heading">Edit favorites</h2><button id="favorite-editor-close" class="composer-close" type="button" aria-label="Close favorites editor">×</button></div>
+          <p class="favorite-editor-help">Drag favorites to reorder them, or use the arrows on iPad.</p>
+          <div id="favorite-editor-list" class="favorite-editor-list"></div>
+          <div class="button-row"><button id="favorite-editor-done" class="button button-primary" type="button">Done</button></div>
         </div>
       </div>
 
@@ -329,6 +338,6 @@
     <script src="js/product.js?v=6.6.0"></script>
     <script src="js/weekly.js?v=6.6.0"></script>
     <script src="js/backup.js?v=6.6.0"></script>
-    <script src="js/app.js?v=7.1.4"></script>
+    <script src="js/app.js?v=7.2.0"></script>
   </body>
 </html>

@@ -526,6 +526,47 @@ label {
 
 .favorite-modal-card select { display: block; width: 100%; margin: 0 0 14px; box-sizing: border-box; }
 
+.favorite-editor-help {
+  margin: 0 0 14px;
+  color: #93a6b3;
+  font-size: 14px;
+}
+
+.favorite-editor-item {
+  min-height: 42px;
+  margin: 0 0 8px;
+  padding: 0 8px 0 12px;
+  border: 1px solid #435563;
+  border-radius: 4px;
+  background: #202d38;
+  color: #d8e1e7;
+  line-height: 40px;
+  cursor: move;
+}
+
+.favorite-editor-label { display: inline-block; }
+
+.favorite-editor-controls {
+  float: right;
+  white-space: nowrap;
+}
+
+.favorite-edit-button {
+  min-width: 32px;
+  min-height: 30px;
+  margin-left: 4px;
+  padding: 3px 7px;
+  border: 1px solid #435563;
+  border-radius: 3px;
+  background: #18232d;
+  color: #d8e1e7;
+}
+
+.favorite-edit-button:hover,
+.favorite-edit-button:focus { border-color: #4ee0a2; background: #245541; color: #ffffff; outline: 0; }
+
+.favorite-delete-button { color: #ffb2b8; }
+
 .date-filter-label {
   position: absolute;
   top: 10px;

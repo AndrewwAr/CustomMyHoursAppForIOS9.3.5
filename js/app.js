@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.1.4-phase6";
+  var APP_VERSION = "7.2.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -399,6 +399,137 @@
       item.appendChild(label);
       item.appendChild(play);
       list.appendChild(item);
+    }
+  }
+
+  function favoriteDisplayName(favorite) {
+    var project = window.MHDomain.findById(data.projects, favorite.projectId);
+    var task = favorite.taskId ? window.MHDomain.findById(data.tasks, favorite.taskId) : null;
+    return task ? task.name : (project ? project.name : "Favorite");
+  }
+
+  function saveFavorites() {
+    try {
+      repository.save(data);
+      renderFavorites();
+    } catch (error) {
+      setNotice("error", "Unable to save favorite order: " + error.message);
+    }
+  }
+
+  function renderFavoriteEditor() {
+    var list = byId("favorite-editor-list");
+    var favorites = data.settings.favorites || [];
+    var index;
+    var row;
+    var label;
+    var controls;
+    var up;
+    var down;
+    var remove;
+    while (list.firstChild) { list.removeChild(list.firstChild); }
+    for (index = 0; index < favorites.length; index += 1) {
+      row = document.createElement("div");
+      row.className = "favorite-editor-item";
+      row.draggable = true;
+      row.setAttribute("data-favorite-index", String(index));
+      label = document.createElement("span");
+      label.className = "favorite-editor-label";
+      setText(label, String(index + 1) + ". " + favoriteDisplayName(favorites[index]));
+      controls = document.createElement("span");
+      controls.className = "favorite-editor-controls";
+      up = document.createElement("button");
+      up.type = "button";
+      up.className = "favorite-edit-button";
+      up.setAttribute("data-favorite-action", "up");
+      up.setAttribute("data-favorite-index", String(index));
+      setText(up, "↑");
+      down = document.createElement("button");
+      down.type = "button";
+      down.className = "favorite-edit-button";
+      down.setAttribute("data-favorite-action", "down");
+      down.setAttribute("data-favorite-index", String(index));
+      setText(down, "↓");
+      remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "favorite-edit-button favorite-delete-button";
+      remove.setAttribute("data-favorite-action", "delete");
+      remove.setAttribute("data-favorite-index", String(index));
+      setText(remove, "Delete");
+      controls.appendChild(up);
+      controls.appendChild(down);
+      controls.appendChild(remove);
+      row.appendChild(label);
+      row.appendChild(controls);
+      list.appendChild(row);
+    }
+  }
+
+  function openFavoriteEditor() {
+    renderFavoriteEditor();
+    show(byId("favorite-editor-modal"));
+  }
+
+  function closeFavoriteEditor() {
+    hide(byId("favorite-editor-modal"));
+  }
+
+  function moveFavorite(index, direction) {
+    var favorites = data.settings.favorites || [];
+    var target = index + direction;
+    var item;
+    if (target < 0 || target >= favorites.length) { return; }
+    item = favorites[index];
+    favorites[index] = favorites[target];
+    favorites[target] = item;
+    saveFavorites();
+    renderFavoriteEditor();
+  }
+
+  function handleFavoriteEditorClick(event) {
+    var target = event.target || event.srcElement;
+    var action;
+    var index;
+    var favorites;
+    if (!target || target.tagName.toLowerCase() !== "button") { return; }
+    action = target.getAttribute("data-favorite-action");
+    index = parseInt(target.getAttribute("data-favorite-index"), 10);
+    favorites = data.settings.favorites || [];
+    if (isNaN(index) || !favorites[index]) { return; }
+    if (action === "up") { moveFavorite(index, -1); }
+    if (action === "down") { moveFavorite(index, 1); }
+    if (action === "delete") {
+      favorites.splice(index, 1);
+      saveFavorites();
+      renderFavoriteEditor();
+    }
+  }
+
+  function handleFavoriteDrop(event) {
+    var target = event.target || event.srcElement;
+    var row;
+    var from;
+    var to;
+    var favorites;
+    event.preventDefault();
+    row = target;
+    while (row && row !== byId("favorite-editor-list") && !row.getAttribute("data-favorite-index")) {
+      row = row.parentNode;
+    }
+    if (!row || row === byId("favorite-editor-list")) { return; }
+    from = parseInt(event.dataTransfer.getData("text/plain"), 10);
+    to = parseInt(row.getAttribute("data-favorite-index"), 10);
+    favorites = data.settings.favorites || [];
+    if (isNaN(from) || isNaN(to) || from === to || !favorites[from]) { return; }
+    favorites.splice(to, 0, favorites.splice(from, 1)[0]);
+    saveFavorites();
+    renderFavoriteEditor();
+  }
+
+  function handleFavoriteDragStart(event) {
+    var row = event.target || event.srcElement;
+    if (event.dataTransfer && row.getAttribute("data-favorite-index")) {
+      event.dataTransfer.setData("text/plain", row.getAttribute("data-favorite-index"));
     }
   }
 
@@ -808,6 +939,9 @@
       }
     };
     byId("add-favorite").onclick = openFavoriteModal;
+    byId("edit-favorites").onclick = openFavoriteEditor;
+    byId("favorite-editor-close").onclick = closeFavoriteEditor;
+    byId("favorite-editor-done").onclick = closeFavoriteEditor;
     byId("favorite-modal-close").onclick = closeFavoriteModal;
     byId("favorite-cancel").onclick = closeFavoriteModal;
     byId("favorite-form").onsubmit = saveFavorite;
@@ -815,6 +949,10 @@
       fillFavoriteTasks(byId("favorite-project").value, "");
     };
     byId("favorite-list").onclick = handleFavoriteClick;
+    byId("favorite-editor-list").onclick = handleFavoriteEditorClick;
+    byId("favorite-editor-list").ondragstart = handleFavoriteDragStart;
+    byId("favorite-editor-list").ondragover = function (event) { event.preventDefault(); };
+    byId("favorite-editor-list").ondrop = handleFavoriteDrop;
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
