@@ -129,6 +129,7 @@
     byId("entry-start").value = "";
     byId("entry-end").value = "";
     byId("entry-description").value = "";
+    byId("entry-tag").value = "";
     byId("entry-billable").checked = true;
     text(byId("entry-error"), "");
     text(byId("entry-submit"), "Add time entry");
@@ -262,6 +263,7 @@
         existing.startTime = state.domain.trim(byId("entry-start").value);
         existing.endTime = state.domain.trim(byId("entry-end").value);
         existing.description = state.domain.trim(byId("entry-description").value);
+        existing.tag = state.domain.trim(byId("entry-tag").value);
         existing.billable = byId("entry-billable").checked;
         existing.updatedAt = now;
       } else {
@@ -274,6 +276,7 @@
           startTime: state.domain.trim(byId("entry-start").value),
           endTime: state.domain.trim(byId("entry-end").value),
           description: state.domain.trim(byId("entry-description").value),
+          tag: state.domain.trim(byId("entry-tag").value),
           billable: byId("entry-billable").checked,
           createdAt: now,
           updatedAt: now
@@ -327,6 +330,7 @@
     byId("entry-seconds").value = String(entry.durationSeconds % 60);
     byId("entry-start").value = entry.startTime || "";
     byId("entry-end").value = entry.endTime || "";
+    byId("entry-tag").value = entry.tag || "";
     byId("entry-description").value = entry.description;
     byId("entry-billable").checked = entry.billable;
     text(byId("entry-submit"), "Save time entry");
@@ -377,6 +381,7 @@
         startTime: entry.startTime || "",
         endTime: entry.endTime || "",
         description: entry.description,
+        tag: entry.tag || "",
         billable: entry.billable,
         createdAt: now,
         updatedAt: now

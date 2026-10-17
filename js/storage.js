@@ -267,7 +267,7 @@
           id: entry.id, date: entry.date, projectId: entry.projectId,
           taskId: entry.taskId, durationSeconds: entry.durationMinutes * 60,
           startTime: entry.startTime || "", endTime: entry.endTime || "",
-          description: entry.description, billable: entry.billable,
+          description: entry.description, tag: entry.tag || "", billable: entry.billable,
           createdAt: entry.createdAt, updatedAt: entry.updatedAt
         };
       });
