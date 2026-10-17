@@ -144,7 +144,7 @@ textarea {
   position: fixed;
   z-index: 20;
   top: 23px;
-  left: 226px;
+  left: 178px;
   width: 32px;
   height: 32px;
   padding: 0;
@@ -152,7 +152,7 @@ textarea {
   border-radius: 5px;
   background: #1a252f;
   color: #d8e1e7;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 28px;
   cursor: pointer;
 }
@@ -174,17 +174,57 @@ textarea {
 }
 
 body.sidebar-collapsed .app-nav {
-  transform: translateX(-100%);
+  width: 58px;
+  padding-right: 6px;
+  padding-left: 6px;
+  transform: none;
 }
 
 body.sidebar-collapsed .page-shell,
 body.sidebar-collapsed .app-header,
 body.sidebar-collapsed .app-footer {
-  margin-left: 0;
+  margin-left: 58px;
 }
 
 body.sidebar-collapsed .sidebar-toggle {
   left: 14px;
+  border-color: #cbd5db;
+  background: #ffffff;
+  color: #435967;
+}
+
+body.sidebar-collapsed .sidebar-title {
+  visibility: hidden;
+  height: 34px;
+  margin-bottom: 20px;
+}
+
+.nav-icon {
+  display: inline-block;
+  width: 24px;
+  margin-right: 8px;
+  color: inherit;
+  font-size: 18px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.nav-label { vertical-align: middle; }
+
+body.sidebar-collapsed .nav-button {
+  width: 46px;
+  padding: 0;
+  text-align: center;
+}
+
+body.sidebar-collapsed .nav-icon {
+  width: auto;
+  margin: 0;
+}
+
+body.sidebar-collapsed .nav-label,
+body.sidebar-collapsed .nav-button.is-active:after {
+  display: none;
 }
 
 .notice {
@@ -977,7 +1017,7 @@ label { color: #d8e1e7; }
   .app-nav { width: 168px; padding-left: 9px; padding-right: 9px; }
   .app-header, .app-footer { margin-left: 168px; }
   .page-shell { margin-left: 168px; padding: 12px; }
-  .sidebar-toggle { left: 180px; }
+  .sidebar-toggle { left: 132px; }
   .sidebar-title { margin-left: 5px; font-size: 18px; }
   .nav-button { padding-left: 9px; font-size: 14px; }
   .app-header {

@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.7.5-phase6";
+  var APP_VERSION = "6.8.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -24,7 +24,7 @@
     if (toggle) {
       toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
       toggle.setAttribute("aria-label", collapsed ? "Show navigation" : "Hide navigation");
-      setText(toggle, collapsed ? "☰" : "×");
+      setText(toggle, collapsed ? "→" : "←");
     }
   }
 
