@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.6.2">
+    <link rel="stylesheet" href="css/app.css?v=6.7.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&times;</button>
-      <span id="version-label" class="version-label">v6.6.2</span>
+      <span id="version-label" class="version-label">v6.7.0</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -62,45 +62,39 @@
         <div class="panel">
           <div class="panel-heading-row wide-heading-row">
             <h2 id="today-heading">Today</h2>
-            <label class="date-filter-label" for="selected-date">Day</label>
-            <input id="selected-date" class="date-filter" type="date">
           </div>
           <button id="new-time-log" class="button button-primary is-hidden" type="button">+ Add time log</button>
 
           <form id="entry-form" novalidate>
             <input id="entry-id" type="hidden">
-            <div class="field-row two-columns">
-              <div class="field-column">
-                <label for="entry-project">Project</label>
-                <select id="entry-project" required></select>
+            <div class="composer-layout">
+              <div class="composer-track-column">
+                <div class="composer-section-label">Track on</div>
+                <label class="sr-only" for="entry-project">Project</label>
+                <select id="entry-project" required aria-label="Select or create a project"></select>
+                <label class="sr-only" for="entry-task">Task</label>
+                <select id="entry-task" aria-label="Select or create a task"></select>
+                <label class="sr-only" for="entry-description">Log description</label>
+                <textarea id="entry-description" maxlength="500" rows="3" placeholder="Add log description or drop files to attach..."></textarea>
+                <label class="sr-only" for="entry-tag">Log tag</label>
+                <input id="entry-tag" type="text" maxlength="80" placeholder="Add a tag...">
               </div>
-              <div class="field-column">
-                <label for="entry-task">Task</label>
-                <select id="entry-task"></select>
-              </div>
-            </div>
-            <div class="field-row duration-row">
-              <div class="duration-field">
-                <label for="entry-hours">Hours</label>
-                <input id="entry-hours" type="number" min="0" max="24" step="1" value="0">
-              </div>
-              <div class="duration-field">
-                <label for="entry-minutes">Minutes</label>
-                <input id="entry-minutes" type="number" min="0" max="59" step="1" value="0">
-              </div>
-              <div class="duration-field">
-                <label for="entry-seconds">Seconds</label>
-                <input id="entry-seconds" type="number" min="0" max="59" step="1" value="0">
-              </div>
-              <div class="billable-field">
-                <label for="entry-billable">
-                  <input id="entry-billable" type="checkbox" checked>
-                  Billable
-                </label>
+              <div class="composer-details-column">
+                <div class="composer-section-label">Duration</div>
+                <div class="duration-fields">
+                  <div class="duration-field"><label for="entry-hours">Hours</label><input id="entry-hours" type="number" min="0" max="24" step="1" value="0"></div>
+                  <div class="duration-field"><label for="entry-minutes">Minutes</label><input id="entry-minutes" type="number" min="0" max="59" step="1" value="0"></div>
+                  <div class="duration-field"><label for="entry-seconds">Seconds</label><input id="entry-seconds" type="number" min="0" max="59" step="1" value="0"></div>
+                </div>
+                <label class="sr-only" for="entry-start">Start time</label>
+                <input id="entry-start" type="text" placeholder="Start time...">
+                <label class="sr-only" for="entry-end">End time</label>
+                <input id="entry-end" type="text" placeholder="End time...">
+                <label class="sr-only" for="selected-date">Date</label>
+                <input id="selected-date" class="date-filter" type="date" aria-label="Date">
+                <label class="composer-billable" for="entry-billable"><input id="entry-billable" type="checkbox" checked> Billable</label>
               </div>
             </div>
-            <label for="entry-description">Description</label>
-            <textarea id="entry-description" maxlength="500" rows="3" placeholder="What did you work on?"></textarea>
             <p id="entry-error" class="field-error" role="alert"></p>
             <div class="button-row">
               <button id="entry-submit" class="button button-primary" type="submit">Add time log</button>
@@ -341,6 +335,6 @@
     <script src="js/product.js?v=6.6.0"></script>
     <script src="js/weekly.js?v=6.6.0"></script>
     <script src="js/backup.js?v=6.6.0"></script>
-    <script src="js/app.js?v=6.6.2"></script>
+    <script src="js/app.js?v=6.7.0"></script>
   </body>
 </html>

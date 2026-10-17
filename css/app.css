@@ -299,6 +299,17 @@ label {
   font-size: 14px;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .panel-heading-row {
   position: relative;
   padding-right: 50px;
@@ -607,6 +618,8 @@ label {
   text-align: left;
 }
 
+.timer-panel .intro-copy { display: none; }
+
 .timer-fields,
 .timer-label,
 .timer-billable {
@@ -637,6 +650,96 @@ label {
   margin: 16px 0 0;
   text-align: left;
 }
+
+.composer-layout {
+  margin: 0 -14px;
+  overflow: hidden;
+  padding: 0 14px;
+}
+
+.composer-track-column {
+  float: left;
+  width: 66%;
+  padding-right: 14px;
+  box-sizing: border-box;
+}
+
+.composer-details-column {
+  float: left;
+  width: 34%;
+  padding-left: 14px;
+  border-left: 1px solid #3d5362;
+  box-sizing: border-box;
+}
+
+.composer-section-label {
+  margin: 0 0 8px;
+  color: #d8e1e7;
+  font-weight: bold;
+}
+
+.composer-track-column select,
+.composer-track-column textarea,
+.composer-track-column input[type="text"],
+.composer-details-column input[type="text"],
+.composer-details-column input[type="date"] {
+  display: block;
+  width: 100%;
+  margin: 0 0 10px;
+  box-sizing: border-box;
+}
+
+.composer-track-column textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+
+.duration-fields {
+  margin: 0 -4px;
+  overflow: hidden;
+}
+
+.duration-fields .duration-field {
+  width: 33.333%;
+  padding: 0 4px;
+}
+
+.duration-fields .duration-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.duration-fields .duration-field input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.composer-details-column .date-filter {
+  position: static;
+}
+
+.composer-billable {
+  display: block;
+  margin: 3px 0 12px;
+  color: #55c98e;
+  font-weight: bold;
+}
+
+.composer-billable input {
+  width: 20px;
+  min-height: 20px;
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+}
+
+.timer-panel > form .button-row,
+.timer-panel > form .timer-actions {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.timer-panel > form .button-row { margin-right: 8px; }
 
 .timer-panel > form .button-row {
   margin-bottom: 4px;
@@ -934,6 +1037,32 @@ label { color: #d8e1e7; }
     float: none;
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  .composer-track-column,
+  .composer-details-column {
+    float: none;
+    width: 100%;
+    padding: 0;
+    border-left: 0;
+  }
+
+  .composer-details-column {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #3d5362;
+  }
+
+  .timer-panel > form .button-row,
+  .timer-panel > form .timer-actions {
+    display: block;
+    margin-right: 0;
+  }
+
+  .timer-panel > form .button-row .button,
+  .timer-panel > form .timer-actions .button {
+    margin-left: 0;
+    margin-right: 6px;
   }
 
   .entry-item {

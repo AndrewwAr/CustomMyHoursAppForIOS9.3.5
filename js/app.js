@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.6.2-phase6";
+  var APP_VERSION = "6.7.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -360,11 +360,15 @@
       setTimerFormCollapsed(false);
       setText(byId("timer-state"), "Ready to start");
       setText(toggle, "Start timer");
+      hide(save);
+      hide(reset);
       reset.disabled = true;
       save.disabled = true;
     } else if (timer.status === "running") {
       setTimerFormCollapsed(true);
       showComposer();
+      show(save);
+      show(reset);
       setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
       setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
       setText(byId("active-timer-toggle"), "Pause");
@@ -375,6 +379,8 @@
     } else {
       setTimerFormCollapsed(true);
       showComposer();
+      show(save);
+      show(reset);
       setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
       setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
       setText(byId("active-timer-toggle"), "Resume");
@@ -720,6 +726,7 @@
     byId("timer-view").className = "panel timer-panel";
     byId("today-view").insertBefore(byId("timer-view"), byId("today-view").firstChild);
     timerCard.appendChild(byId("entry-form"));
+    byId("entry-form").appendChild(byId("timer-actions"));
     entryPanel.className += " is-hidden";
 
     setText(byId("version-label"), "v" + APP_VERSION);
