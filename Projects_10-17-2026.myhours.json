@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 4,
+  "records": [],
+  "timer": null,
+  "projects": [
+    {"id":"project-body-care","name":"Body Care","color":"#3b8fc2","archived":false,"createdAt":"2026-05-04T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-bible-study","name":"Bible Study","color":"#319a72","archived":false,"createdAt":"2026-05-04T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-planning","name":"Planning","color":"#8b67b2","archived":false,"createdAt":"2026-04-28T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-sleeping","name":"Sleeping","color":"#d17a42","archived":false,"createdAt":"2026-04-27T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-workout","name":"Workout","color":"#c45555","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-agbeya-prayer","name":"Agbeya Prayer","color":"#667985","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-learning-career","name":"Learning for Career","color":"#3b8fc2","archived":false,"createdAt":"2026-04-17T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-nutrition","name":"Nutrition","color":"#319a72","archived":false,"createdAt":"2026-04-15T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-spiritual-readings","name":"Spiritual Readings","color":"#8b67b2","archived":false,"createdAt":"2026-04-03T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-senetronic","name":"Senetronic","color":"#d17a42","archived":false,"createdAt":"2026-04-02T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-proven","name":"Proven","color":"#c45555","archived":false,"createdAt":"2026-04-01T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"project-cyberspeed","name":"Cyberspeed","color":"#667985","archived":false,"createdAt":"2026-04-01T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"}
+  ],
+  "tasks": [
+    {"id":"task-body-care-body","projectId":"project-body-care","name":"Tuesday - Body","archived":false,"createdAt":"2026-05-04T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-bible-study-spiritual","projectId":"project-bible-study","name":"Sunday - Spiritual Life","archived":false,"createdAt":"2026-05-04T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-planning-career","projectId":"project-planning","name":"Thursday - Career","archived":false,"createdAt":"2026-04-28T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-planning-mental","projectId":"project-planning","name":"Monday - Mental","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-planning-body","projectId":"project-planning","name":"Tuesday - Body","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-planning-spiritual","projectId":"project-planning","name":"Sunday - Spiritual Life","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-sleeping-body","projectId":"project-sleeping","name":"Tuesday - Body","archived":false,"createdAt":"2026-04-27T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-workout-body","projectId":"project-workout","name":"Tuesday - Body","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-agbeya-spiritual","projectId":"project-agbeya-prayer","name":"Sunday - Spiritual Life","archived":false,"createdAt":"2026-04-23T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-learning-career","projectId":"project-learning-career","name":"Thursday - Career","archived":false,"createdAt":"2026-04-17T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-nutrition-body","projectId":"project-nutrition","name":"Tuesday - Body","archived":false,"createdAt":"2026-04-15T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-spiritual-readings-spiritual","projectId":"project-spiritual-readings","name":"Sunday - Spiritual Life","archived":false,"createdAt":"2026-04-03T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-senetronic-career","projectId":"project-senetronic","name":"Thursday - Career","archived":false,"createdAt":"2026-04-02T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-proven-career","projectId":"project-proven","name":"Thursday - Career","archived":false,"createdAt":"2026-04-01T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"},
+    {"id":"task-cyberspeed-career","projectId":"project-cyberspeed","name":"Thursday - Career","archived":false,"createdAt":"2026-04-01T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"}
+  ],
+  "timeEntries": [],
+  "settings": {"selectedDate":"2026-10-17","favorites":[]},
+  "metadata": {"createdAt":"2026-10-17T00:00:00.000Z","updatedAt":"2026-10-17T00:00:00.000Z"}
+}
