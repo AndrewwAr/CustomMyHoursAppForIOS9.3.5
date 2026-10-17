@@ -472,7 +472,10 @@ label {
 .favorite-link:hover,
 .favorite-link:focus { color: #4ee0a2; outline: 0; }
 
-.favorite-list { display: inline-block; }
+.favorite-list {
+  display: block;
+  margin-top: 4px;
+}
 
 .favorite-item {
   display: inline-block;

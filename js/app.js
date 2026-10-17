@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.3.2-phase6";
+  var APP_VERSION = "7.3.3-phase6";
   var repository;
   var data;
   var storageStatus;
