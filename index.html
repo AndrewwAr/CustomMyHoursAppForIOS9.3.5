@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.8.1">
+    <link rel="stylesheet" href="css/app.css?v=6.8.2">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&#8592;</button>
-      <span id="version-label" class="version-label">v6.8.1</span>
+      <span id="version-label" class="version-label">v6.8.2</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -112,17 +112,6 @@
           <ul id="entry-list" class="entry-list"></ul>
         </div>
 
-        <div class="panel test-checklist">
-          <h2>Phase 2 iPad test</h2>
-          <ol>
-            <li>Create and edit a project and task from the Projects tab.</li>
-            <li>Add a 1 hour 30 minute entry and verify the daily total.</li>
-            <li>Refresh Safari, then edit, copy, and delete the entry.</li>
-            <li>Add an entry on another date and navigate between the two days.</li>
-            <li>Archive the project and confirm its old entries remain readable.</li>
-            <li>Restore it and confirm it is selectable again.</li>
-          </ol>
-        </div>
       </section>
 
       <section id="week-view" class="view-panel is-hidden" aria-labelledby="week-heading">
@@ -145,7 +134,6 @@
           <h3>Time entries</h3>
           <ul id="week-list" class="entry-list"></ul>
         </div>
-        <div class="panel test-checklist"><h2>Phase 4 iPad test</h2><ol><li>Verify all seven daily totals and the weekly total.</li><li>Move to previous and next weeks, then return to the current week.</li><li>Filter by project and billable status.</li><li>Tap Edit on a weekly entry, save it in Today, and confirm the weekly totals update.</li></ol></div>
       </section>
 
       <section id="projects-view" class="view-panel is-hidden" aria-labelledby="projects-heading">
@@ -234,15 +222,6 @@
           <ul id="record-list" class="record-list"></ul>
         </div>
 
-        <div class="panel test-checklist">
-          <h2>Phase 1 iPad test</h2>
-          <ol>
-            <li>Save a note and refresh this page.</li>
-            <li>Close Safari, reopen it, and return to this URL.</li>
-            <li>Rotate the iPad and verify both layouts.</li>
-            <li>Restart the iPad and confirm that the note still exists.</li>
-          </ol>
-        </div>
       </section>
 
       <section id="timer-view" class="view-panel is-hidden" aria-labelledby="timer-heading">
@@ -282,18 +261,6 @@
           <p id="timer-error" class="field-error" role="alert"></p>
         </div>
 
-        <div class="panel test-checklist">
-          <h2>Phase 3 iPad test</h2>
-          <ol>
-            <li>Select a project and task, add a description, then start the timer.</li>
-            <li>Background Safari or lock the iPad, wait, return, and verify it continued.</li>
-            <li>Refresh the page and confirm the timer, assignment, and description recover.</li>
-            <li>Pause, wait, resume, then use Stop &amp; save.</li>
-            <li>Open Today and verify one entry with the exact elapsed seconds.</li>
-            <li>Start another timer, cancel it, and verify no entry was created.</li>
-            <li>Stop a timer, select another project/task, and start again.</li>
-          </ol>
-        </div>
       </section>
 
       <section id="diagnostics-view" class="view-panel is-hidden" aria-labelledby="diagnostics-heading">
@@ -335,6 +302,6 @@
     <script src="js/product.js?v=6.6.0"></script>
     <script src="js/weekly.js?v=6.6.0"></script>
     <script src="js/backup.js?v=6.6.0"></script>
-    <script src="js/app.js?v=6.8.1"></script>
+    <script src="js/app.js?v=6.8.2"></script>
   </body>
 </html>

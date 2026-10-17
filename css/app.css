@@ -610,15 +610,6 @@ label {
   min-height: 42px;
 }
 
-.test-checklist ol {
-  margin: 0;
-  padding-left: 25px;
-}
-
-.test-checklist li {
-  margin: 8px 0;
-}
-
 .timer-panel {
   text-align: center;
   width: 100%;
@@ -953,7 +944,6 @@ label { color: #d8e1e7; }
 .notice-success { border-color: #287d60; background: #15382d; color: #9bf0c7; }
 .notice-info { border-color: #35657c; background: #152c39; color: #a8d9ef; }
 .notice-error { border-color: #8b4954; background: #3a2028; color: #ffc4cb; }
-.test-checklist { background: #17212a; }
 .diagnostic-output { border-color: #435563; background: #121b23; color: #e4edf1; }
 .app-footer { color: #71818c; }
 
