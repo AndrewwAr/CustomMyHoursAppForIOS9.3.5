@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.9.0-phase6";
+  var APP_VERSION = "6.9.1-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -685,6 +685,7 @@
     var browserStorage;
     var entryPanel;
     var timerCard;
+    var todayView;
 
     if (!window.MHStorage || !window.MHTimer || !window.MHDomain || !window.MHProduct || !window.MHWeekly || !window.MHBackup) {
       setNotice("error", "A required application component did not load. Check the network and reload.");
@@ -725,6 +726,8 @@
     }
 
     entryPanel = byId("entry-form").parentNode;
+    todayView = byId("today-view");
+    todayView.insertBefore(byId("timer-view"), entryPanel);
     timerCard = byId("timer-view").getElementsByTagName("div")[0];
     byId("timer-view").className = "panel timer-panel";
     byId("today-view").insertBefore(byId("timer-view"), byId("today-view").firstChild);
