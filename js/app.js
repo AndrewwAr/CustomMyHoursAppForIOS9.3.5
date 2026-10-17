@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "8.0.0-hierarchy";
+  var APP_VERSION = "8.0.1-hierarchy-delete";
   var repository;
   var data;
   var storageStatus;

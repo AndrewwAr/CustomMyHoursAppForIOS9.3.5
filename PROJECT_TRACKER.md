@@ -76,6 +76,7 @@ Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 - [x] Display full task paths in entries, active timers, favorites, and CSV exports.
 - [x] Preserve hierarchy through JSON backup export/import and legacy migration.
 - [x] Add storage/domain regression tests for nested tasks, migration, and cycles.
+- [x] Replace project/task archive controls with confirmed delete actions that remove dependent hierarchy data safely.
 - [x] Run compatibility, DOM, and ES5 checks.
 - [ ] Complete interactive desktop browser verification.
 - [ ] Complete physical iPad 2 verification.

@@ -392,29 +392,59 @@
     root.scrollTo(0, 0);
   }
 
-  function toggleProject(id) {
+  function removeItems(items, ids) {
+    var kept = [];
+    var index;
+    for (index = 0; index < items.length; index += 1) {
+      if (ids.indexOf(items[index].id) === -1) { kept.push(items[index]); }
+    }
+    return kept;
+  }
+
+  function deleteProject(id) {
     var project = state.domain.findById(state.data.projects, id);
-    if (!project) {
+    var taskIds;
+    var entryCount = 0;
+    var index;
+    if (!project) { return; }
+    taskIds = state.data.tasks.filter(function (task) { return task.projectId === id; }).map(function (task) { return task.id; });
+    for (index = 0; index < state.data.timeEntries.length; index += 1) {
+      if (state.data.timeEntries[index].projectId === id) { entryCount += 1; }
+    }
+    if (!root.confirm("Delete project '" + project.name + "' and its " + taskIds.length + " task(s)" + (entryCount ? " and " + entryCount + " time entr" + (entryCount === 1 ? "y" : "ies") : "") + "? This cannot be undone.")) {
       return;
     }
     saveMutation(function () {
-      project.archived = !project.archived;
-      project.updatedAt = new Date().toISOString();
-    }, byId("project-error"), project.archived ? "Project restored." : "Project archived.");
+      state.data.projects = removeItems(state.data.projects, [id]);
+      state.data.tasks = removeItems(state.data.tasks, taskIds);
+      state.data.timeEntries = state.data.timeEntries.filter(function (entry) { return entry.projectId !== id; });
+      state.data.settings.favorites = (state.data.settings.favorites || []).filter(function (favorite) { return favorite.projectId !== id; });
+      if (state.data.timer && state.data.timer.projectId === id) { state.data.timer = null; }
+    }, byId("project-error"), "Project deleted.");
     resetProjectForm();
     resetTaskForm();
     resetEntryForm();
   }
 
-  function toggleTask(id) {
+  function deleteTask(id) {
     var task = state.domain.findById(state.data.tasks, id);
-    if (!task) {
+    var taskIds;
+    var entryCount = 0;
+    var index;
+    if (!task) { return; }
+    taskIds = [id].concat(state.domain.descendantsOfTask(state.data.tasks, id).map(function (item) { return item.id; }));
+    for (index = 0; index < state.data.timeEntries.length; index += 1) {
+      if (taskIds.indexOf(state.data.timeEntries[index].taskId) !== -1) { entryCount += 1; }
+    }
+    if (!root.confirm("Delete task '" + task.name + "' and its " + (taskIds.length - 1) + " subtask(s)" + (entryCount ? " and " + entryCount + " time entr" + (entryCount === 1 ? "y" : "ies") : "") + "? This cannot be undone.")) {
       return;
     }
     saveMutation(function () {
-      task.archived = !task.archived;
-      task.updatedAt = new Date().toISOString();
-    }, byId("task-error"), task.archived ? "Task restored." : "Task archived.");
+      state.data.tasks = removeItems(state.data.tasks, taskIds);
+      state.data.timeEntries = state.data.timeEntries.filter(function (entry) { return taskIds.indexOf(entry.taskId) === -1; });
+      state.data.settings.favorites = (state.data.settings.favorites || []).filter(function (favorite) { return taskIds.indexOf(favorite.taskId) === -1; });
+      if (state.data.timer && taskIds.indexOf(state.data.timer.taskId) !== -1) { state.data.timer = null; }
+    }, byId("task-error"), "Task deleted.");
     resetTaskForm();
     resetEntryForm();
   }
@@ -506,7 +536,7 @@
       if (!project.archived) {
         actions.appendChild(actionButton("Edit", "project-edit", project.id, false));
       }
-      actions.appendChild(actionButton(project.archived ? "Restore" : "Archive", "project-toggle", project.id, project.archived ? false : true));
+      actions.appendChild(actionButton("Delete", "project-delete", project.id, true));
       heading.appendChild(title);
       heading.appendChild(actions);
       card.appendChild(heading);
@@ -538,9 +568,7 @@
             taskActions.appendChild(actionButton("Edit", "task-edit", child.id, false));
             taskActions.appendChild(actionButton("+ Subtask", "task-add-child", child.id, false));
           }
-          if (!project.archived) {
-            taskActions.appendChild(actionButton(child.archived ? "Restore" : "Archive", "task-toggle", child.id, !child.archived));
-          }
+          taskActions.appendChild(actionButton("Delete", "task-delete", child.id, true));
           taskItem.appendChild(taskActions);
           container.appendChild(taskItem);
           nested = document.createElement("ul");
@@ -680,10 +708,10 @@
     action = target.getAttribute("data-action");
     id = target.getAttribute("data-id");
     if (action === "project-edit") { editProject(id); }
-    if (action === "project-toggle") { toggleProject(id); }
+    if (action === "project-delete") { deleteProject(id); }
     if (action === "task-edit") { editTask(id); }
     if (action === "task-add-child") { addSubtask(id); }
-    if (action === "task-toggle") { toggleTask(id); }
+    if (action === "task-delete") { deleteTask(id); }
   }
 
   function handleEntryActions(event) {
