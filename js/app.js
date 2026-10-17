@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.9.4-phase6";
+  var APP_VERSION = "6.9.5-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -732,7 +732,6 @@
     todayView.insertBefore(byId("timer-view"), byId("track-toolbar").nextSibling);
     timerCard = byId("timer-view").getElementsByTagName("div")[0];
     byId("timer-view").className = "panel timer-panel";
-    byId("today-view").insertBefore(byId("timer-view"), byId("today-view").firstChild);
     timerCard.appendChild(byId("entry-form"));
     byId("entry-form").appendChild(byId("timer-actions"));
     entryPanel.className += " is-hidden";
