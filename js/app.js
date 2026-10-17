@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.1.3-phase6";
+  var APP_VERSION = "7.1.4-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -798,8 +798,14 @@
     byId("date-next").onclick = function () { moveSelectedDate(1); };
     byId("date-today").onclick = selectToday;
     byId("show-favorites").onclick = function () {
-      renderFavorites();
-      show(byId("favorites-panel"));
+      var panel = byId("favorites-panel");
+      var hidden = (" " + panel.className + " ").indexOf(" is-hidden ") !== -1;
+      if (hidden) {
+        renderFavorites();
+        show(panel);
+      } else {
+        hide(panel);
+      }
     };
     byId("add-favorite").onclick = openFavoriteModal;
     byId("favorite-modal-close").onclick = closeFavoriteModal;
