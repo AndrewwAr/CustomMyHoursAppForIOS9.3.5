@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "6.9.5-phase6";
+  var APP_VERSION = "7.0.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -34,6 +34,19 @@
     try {
       window.localStorage.setItem("myhours-custom.sidebar-collapsed", collapsed ? "no" : "yes");
     } catch (ignore) {}
+  }
+
+  function moveSelectedDate(amount) {
+    var input = byId("selected-date");
+    var current = input.value || window.MHDomain.dateKey(new Date());
+    input.value = window.MHDomain.addDays(current, amount);
+    input.onchange();
+  }
+
+  function selectToday() {
+    var input = byId("selected-date");
+    input.value = window.MHDomain.dateKey(new Date());
+    input.onchange();
   }
 
   function byId(id) {
@@ -647,6 +660,9 @@
       setActiveView("diagnostics");
     };
     byId("sidebar-toggle").onclick = toggleSidebar;
+    byId("date-previous").onclick = function () { moveSelectedDate(-1); };
+    byId("date-next").onclick = function () { moveSelectedDate(1); };
+    byId("date-today").onclick = selectToday;
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };

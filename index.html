@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=6.9.5">
+    <link rel="stylesheet" href="css/app.css?v=7.0.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&#8592;</button>
-      <span id="version-label" class="version-label">v6.9.5</span>
+      <span id="version-label" class="version-label">v7.0.0</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -61,6 +61,12 @@
         </div>
         <div id="track-toolbar" class="track-toolbar">
           <h2 id="today-heading">Track</h2>
+          <div class="date-navigation" aria-label="Choose tracking day">
+            <button id="date-previous" class="date-navigation-button" type="button" aria-label="Previous day">&#8249;</button>
+            <input id="selected-date" class="date-navigation-input" type="date" aria-label="Selected day">
+            <button id="date-next" class="date-navigation-button" type="button" aria-label="Next day">&#8250;</button>
+            <button id="date-today" class="date-navigation-home" type="button" aria-label="Today" title="Today">&#8962;</button>
+          </div>
           <button id="new-time-log" class="button button-primary" type="button">+ Add time log</button>
           <div class="track-toolbar-icons" role="toolbar" aria-label="Track view options">
             <button class="toolbar-icon" type="button" title="Show Favourite" aria-label="Show Favourite">&#9733;</button>
@@ -94,8 +100,6 @@
                 <input id="entry-start" type="text" placeholder="Start time...">
                 <label class="sr-only" for="entry-end">End time</label>
                 <input id="entry-end" type="text" placeholder="End time...">
-                <label class="sr-only" for="selected-date">Date</label>
-                <input id="selected-date" class="date-filter" type="date" aria-label="Date">
                 <label class="composer-billable" for="entry-billable"><input id="entry-billable" type="checkbox" checked> Billable</label>
               </div>
             </div>
@@ -306,6 +310,6 @@
     <script src="js/product.js?v=6.6.0"></script>
     <script src="js/weekly.js?v=6.6.0"></script>
     <script src="js/backup.js?v=6.6.0"></script>
-    <script src="js/app.js?v=6.9.5"></script>
+    <script src="js/app.js?v=7.0.0"></script>
   </body>
 </html>

@@ -372,6 +372,55 @@ label {
   font-size: 30px;
 }
 
+.date-navigation {
+  display: inline-block;
+  margin: 0 10px 12px 0;
+  border: 1px solid #435563;
+  border-radius: 5px;
+  background: #121b23;
+  vertical-align: middle;
+}
+
+.date-navigation-button,
+.date-navigation-home {
+  min-width: 38px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #d8e1e7;
+  font-size: 22px;
+  vertical-align: middle;
+}
+
+.date-navigation-home {
+  border-left: 1px solid #435563;
+  font-size: 20px;
+}
+
+.date-navigation-button:hover,
+.date-navigation-button:focus,
+.date-navigation-home:hover,
+.date-navigation-home:focus {
+  background: #245541;
+  color: #ffffff;
+  outline: 0;
+}
+
+.date-navigation-input {
+  width: 145px;
+  min-height: 36px;
+  padding: 5px 8px;
+  border: 0;
+  border-left: 1px solid #435563;
+  border-radius: 0;
+  background: #121b23;
+  color: #f1f6f8;
+  font-size: 14px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
 .track-toolbar .button-primary {
   margin-right: 8px;
 }
@@ -1103,6 +1152,9 @@ label { color: #d8e1e7; }
   }
 
   .track-toolbar h2 { font-size: 24px; }
+
+  .date-navigation { display: block; width: 100%; margin-right: 0; }
+  .date-navigation-input { width: calc(100% - 116px); }
 
   .track-toolbar .button-primary {
     display: block;
