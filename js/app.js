@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.3.3-phase6";
+  var APP_VERSION = "7.4.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -906,6 +906,20 @@
     }
   }
 
+  function resetWebsiteStorage() {
+    if (!window.confirm("Reset this app's website storage? All local projects, tasks, favorites, timers, entries, and notes will be permanently deleted. Export a backup first.")) {
+      return;
+    }
+    try {
+      window.localStorage.removeItem(repository.getStorageKey());
+      window.localStorage.removeItem("myhours-custom.guide-seen");
+      window.localStorage.removeItem("myhours-custom.sidebar-collapsed");
+      window.location.reload();
+    } catch (error) {
+      setNotice("error", "Unable to reset website storage: " + error.message);
+    }
+  }
+
   function bindEvents() {
     byId("record-form").onsubmit = saveRecord;
     byId("record-list").onclick = handleRecordListClick;
@@ -963,6 +977,7 @@
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
+    byId("reset-storage").onclick = resetWebsiteStorage;
     byId("new-time-log").onclick = showComposer;
     byId("composer-dismiss").onclick = dismissComposer;
     byId("composer-dismiss-action").onclick = dismissComposer;
