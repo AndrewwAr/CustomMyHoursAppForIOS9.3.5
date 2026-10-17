@@ -1125,6 +1125,16 @@ body {
 .panel h3 { color: #d8e1e7; }
 .intro-copy, .timer-state, .entry-description, .entry-meta, .record-date { color: #93a6b3; }
 
+.project-card {
+  border-color: #2b3945;
+  background: #202d38;
+}
+
+.project-card-heading h3 { color: #f1f6f8; }
+.task-list { border-top-color: #3a4b57; }
+.task-item { border-bottom-color: #344652; color: #d8e1e7; }
+.task-item.is-archived { color: #71818c; }
+
 input, textarea, select {
   border-color: #435563;
   background: #121b23;
