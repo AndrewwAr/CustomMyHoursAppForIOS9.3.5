@@ -10,7 +10,7 @@
     <title>My Hours Custom</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
-    <link rel="stylesheet" href="css/app.css?v=7.0.0">
+    <link rel="stylesheet" href="css/app.css?v=7.1.0">
     <script>
       window.__mhStartupErrors = [];
       window.onerror = function (message, source, line, column) {
@@ -31,7 +31,7 @@
         <p>Legacy iPad compatibility build</p>
       </div>
       <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">&#8592;</button>
-      <span id="version-label" class="version-label">v7.0.0</span>
+      <span id="version-label" class="version-label">v7.1.0</span>
     </header>
 
       <nav class="app-nav" aria-label="Main navigation">
@@ -69,9 +69,13 @@
           </div>
           <button id="new-time-log" class="button button-primary" type="button">+ Add time log</button>
           <div class="track-toolbar-icons" role="toolbar" aria-label="Track view options">
-            <button class="toolbar-icon" type="button" title="Show Favourite" aria-label="Show Favourite">&#9733;</button>
+            <button id="show-favorites" class="toolbar-icon" type="button" title="Show Favourite" aria-label="Show Favourite">&#9733;</button>
             <button class="toolbar-icon" type="button" title="Show Time" aria-label="Show Time">&#9681;</button>
             <button class="toolbar-icon" type="button" title="View logs as group" aria-label="View logs as group">&#8646;</button>
+          </div>
+          <div id="favorites-panel" class="favorites-panel is-hidden">
+            <button id="add-favorite" class="favorite-link" type="button">+ Add new favorite</button>
+            <div id="favorite-list" class="favorite-list"></div>
           </div>
         </div>
         <div class="panel">
@@ -121,6 +125,20 @@
         </div>
 
       </section>
+
+      <div id="favorite-modal" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="favorite-modal-heading">
+        <div class="modal-card favorite-modal-card">
+          <div class="composer-heading"><h2 id="favorite-modal-heading">Add a favorite time log</h2><button id="favorite-modal-close" class="composer-close" type="button" aria-label="Close favorite form">×</button></div>
+          <form id="favorite-form" novalidate>
+            <label for="favorite-project">Project</label>
+            <select id="favorite-project" required></select>
+            <label for="favorite-task">Task</label>
+            <select id="favorite-task"></select>
+            <p id="favorite-error" class="field-error" role="alert"></p>
+            <div class="button-row"><button class="button button-primary" type="submit">Add favorite</button><button id="favorite-cancel" class="button" type="button">Dismiss</button></div>
+          </form>
+        </div>
+      </div>
 
       <section id="week-view" class="view-panel is-hidden" aria-labelledby="week-heading">
         <div class="panel">
@@ -310,6 +328,6 @@
     <script src="js/product.js?v=6.6.0"></script>
     <script src="js/weekly.js?v=6.6.0"></script>
     <script src="js/backup.js?v=6.6.0"></script>
-    <script src="js/app.js?v=7.0.0"></script>
+    <script src="js/app.js?v=7.1.0"></script>
   </body>
 </html>

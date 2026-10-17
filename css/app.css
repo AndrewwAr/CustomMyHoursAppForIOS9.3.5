@@ -453,6 +453,79 @@ label {
   outline: 0;
 }
 
+.favorites-panel {
+  margin: 0 0 14px;
+  padding: 0 0 4px;
+}
+
+.favorite-link {
+  margin: 0 18px 8px 0;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: #d8e1e7;
+  font-size: 15px;
+}
+
+.favorite-link:hover,
+.favorite-link:focus { color: #4ee0a2; outline: 0; }
+
+.favorite-list { display: inline-block; }
+
+.favorite-item {
+  display: inline-block;
+  min-height: 34px;
+  margin: 0 8px 8px 0;
+  border: 1px solid #435563;
+  border-radius: 4px;
+  background: #202d38;
+  vertical-align: middle;
+}
+
+.favorite-label {
+  display: inline-block;
+  padding: 7px 8px;
+  color: #d8e1e7;
+  font-size: 14px;
+}
+
+.favorite-play {
+  min-width: 34px;
+  min-height: 32px;
+  border: 0;
+  border-left: 1px solid #435563;
+  background: transparent;
+  color: #4ee0a2;
+  font-size: 16px;
+}
+
+.favorite-play:hover,
+.favorite-play:focus { background: #245541; color: #ffffff; outline: 0; }
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 8% 18px;
+  background: rgba(0, 0, 0, 0.62);
+  box-sizing: border-box;
+}
+
+.modal-card {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 22px;
+  border: 1px solid #435563;
+  border-radius: 6px;
+  background: #1a252f;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+.favorite-modal-card select { display: block; width: 100%; margin: 0 0 14px; box-sizing: border-box; }
+
 .date-filter-label {
   position: absolute;
   top: 10px;

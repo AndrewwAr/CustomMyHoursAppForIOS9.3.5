@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.0.0-phase6";
+  var APP_VERSION = "7.1.0-phase6";
   var repository;
   var data;
   var storageStatus;
@@ -340,6 +340,131 @@
     }
   }
 
+  function fillFavoriteProjects(selectedId) {
+    var select = byId("favorite-project");
+    var index;
+    var project;
+    while (select.firstChild) { select.removeChild(select.firstChild); }
+    appendTimerOption(select, "", data.projects.length ? "Select a project" : "Create a project first", selectedId);
+    for (index = 0; index < data.projects.length; index += 1) {
+      project = data.projects[index];
+      if (!project.archived || project.id === selectedId) {
+        appendTimerOption(select, project.id, project.name, selectedId);
+      }
+    }
+  }
+
+  function fillFavoriteTasks(projectId, selectedId) {
+    var select = byId("favorite-task");
+    var tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
+    var index;
+    while (select.firstChild) { select.removeChild(select.firstChild); }
+    appendTimerOption(select, "", "No task", selectedId);
+    for (index = 0; index < tasks.length; index += 1) {
+      appendTimerOption(select, tasks[index].id, tasks[index].name, selectedId);
+    }
+  }
+
+  function renderFavorites() {
+    var list = byId("favorite-list");
+    var favorites = data.settings.favorites || [];
+    var index;
+    var favorite;
+    var project;
+    var task;
+    var item;
+    var label;
+    var play;
+    while (list.firstChild) { list.removeChild(list.firstChild); }
+    for (index = 0; index < favorites.length; index += 1) {
+      favorite = favorites[index];
+      project = window.MHDomain.findById(data.projects, favorite.projectId);
+      task = favorite.taskId ? window.MHDomain.findById(data.tasks, favorite.taskId) : null;
+      item = document.createElement("div");
+      item.className = "favorite-item";
+      label = document.createElement("span");
+      label.className = "favorite-label";
+      setText(label, String(index + 1) + ". " + (task ? task.name : (project ? project.name : "Favorite")));
+      play = document.createElement("button");
+      play.className = "favorite-play";
+      play.type = "button";
+      play.setAttribute("data-favorite-id", favorite.id);
+      play.setAttribute("aria-label", "Start " + label.textContent);
+      setText(play, "▶");
+      item.appendChild(label);
+      item.appendChild(play);
+      list.appendChild(item);
+    }
+  }
+
+  function openFavoriteModal() {
+    fillFavoriteProjects("");
+    fillFavoriteTasks("", "");
+    text(byId("favorite-error"), "");
+    show(byId("favorite-modal"));
+  }
+
+  function closeFavoriteModal() {
+    hide(byId("favorite-modal"));
+  }
+
+  function saveFavorite(event) {
+    var projectId = byId("favorite-project").value;
+    var taskId = byId("favorite-task").value || null;
+    var project = window.MHDomain.findById(data.projects, projectId);
+    var task = taskId ? window.MHDomain.findById(data.tasks, taskId) : null;
+    event.preventDefault();
+    if (!project || project.archived) {
+      setText(byId("favorite-error"), "Select an active project.");
+      return;
+    }
+    if (task && (task.archived || task.projectId !== projectId)) {
+      setText(byId("favorite-error"), "Select a task belonging to this project.");
+      return;
+    }
+    if (!data.settings.favorites) { data.settings.favorites = []; }
+    data.settings.favorites.push({
+      id: createId("favorite"),
+      projectId: projectId,
+      taskId: taskId,
+      createdAt: new Date().toISOString()
+    });
+    try {
+      repository.save(data);
+      renderFavorites();
+      closeFavoriteModal();
+      show(byId("favorites-panel"));
+    } catch (error) {
+      data.settings.favorites.pop();
+      setText(byId("favorite-error"), error.message);
+    }
+  }
+
+  function startFavorite(id) {
+    var favorites = data.settings.favorites || [];
+    var favorite = window.MHDomain.findById(favorites, id);
+    if (!favorite) { return; }
+    if (data.timer) {
+      setText(byId("timer-error"), "Stop or pause the current timer before starting a favorite.");
+      return;
+    }
+    byId("timer-project").value = favorite.projectId;
+    fillTimerTasks(favorite.projectId, favorite.taskId || "");
+    byId("timer-task").value = favorite.taskId || "";
+    byId("entry-project").value = favorite.projectId;
+    fillTimerTasks(favorite.projectId, favorite.taskId || "");
+    byId("entry-task").value = favorite.taskId || "";
+    toggleTimer();
+  }
+
+  function handleFavoriteClick(event) {
+    var target = event.target || event.srcElement;
+    var id;
+    if (!target || target.tagName.toLowerCase() !== "button") { return; }
+    id = target.getAttribute("data-favorite-id");
+    if (id) { startFavorite(id); }
+  }
+
   function renderTimerAssignment(timer) {
     var projectId = timer && timer.projectId ? timer.projectId : byId("timer-project").value;
     var taskId = timer && timer.taskId ? timer.taskId : byId("timer-task").value;
@@ -663,6 +788,18 @@
     byId("date-previous").onclick = function () { moveSelectedDate(-1); };
     byId("date-next").onclick = function () { moveSelectedDate(1); };
     byId("date-today").onclick = selectToday;
+    byId("show-favorites").onclick = function () {
+      renderFavorites();
+      show(byId("favorites-panel"));
+    };
+    byId("add-favorite").onclick = openFavoriteModal;
+    byId("favorite-modal-close").onclick = closeFavoriteModal;
+    byId("favorite-cancel").onclick = closeFavoriteModal;
+    byId("favorite-form").onsubmit = saveFavorite;
+    byId("favorite-project").onchange = function () {
+      fillFavoriteTasks(byId("favorite-project").value, "");
+    };
+    byId("favorite-list").onclick = handleFavoriteClick;
     byId("refresh-diagnostics").onclick = renderDiagnostics;
     byId("copy-diagnostics").onclick = copyDiagnostics;
     byId("safe-mode").onclick = function () { window.location.href = window.location.pathname + "?safe=1"; };
@@ -743,6 +880,10 @@
       setNotice("error", error.message + " Open Diagnostics for details.");
     }
 
+    if (!data.settings.favorites) {
+      data.settings.favorites = [];
+    }
+
     entryPanel = byId("entry-form").parentNode;
     todayView = byId("today-view");
     todayView.insertBefore(byId("timer-view"), byId("track-toolbar").nextSibling);
@@ -791,6 +932,7 @@
     renderRecords();
     renderTimer();
     renderTimerAssignment(data.timer);
+    renderFavorites();
     renderDiagnostics();
     bindEvents();
     startTimerRefresh();
