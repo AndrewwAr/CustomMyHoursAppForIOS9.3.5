@@ -752,6 +752,21 @@ label {
   border-bottom: 1px solid #e7ecef;
 }
 
+.task-children {
+  margin-top: 0;
+  margin-left: 22px;
+  border-top: 0;
+}
+
+.task-children .task-item {
+  padding-left: 12px;
+}
+
+#task-form .field-column:nth-child(3) {
+  width: 100%;
+  margin-top: 8px;
+}
+
 .task-item.is-archived {
   color: #7b898f;
   text-decoration: line-through;

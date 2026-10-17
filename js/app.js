@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "7.4.0-phase6";
+  var APP_VERSION = "8.0.0-hierarchy";
   var repository;
   var data;
   var storageStatus;
@@ -332,12 +332,17 @@
   function fillTimerTasks(projectId, selectedId) {
     var select = byId("timer-task");
     var tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
-    var index;
+    var visit = function (parentId, prefix) {
+      var children = window.MHDomain.childrenOfTask(tasks, parentId, true);
+      var index;
+      for (index = 0; index < children.length; index += 1) {
+        appendTimerOption(select, children[index].id, prefix + children[index].name + (children[index].archived ? " (archived)" : ""), selectedId);
+        visit(children[index].id, prefix + "  ");
+      }
+    };
     while (select.firstChild) { select.removeChild(select.firstChild); }
     appendTimerOption(select, "", "No task", selectedId);
-    for (index = 0; index < tasks.length; index += 1) {
-      appendTimerOption(select, tasks[index].id, tasks[index].name + (tasks[index].archived ? " (archived)" : ""), selectedId);
-    }
+    visit(null, "");
   }
 
   function fillFavoriteProjects(selectedId) {
@@ -359,15 +364,20 @@
   function fillFavoriteTasks(projectId, selectedId) {
     var select = byId("favorite-task");
     var tasks;
-    var index;
+    var visit = function (parentId, prefix) {
+      var children = window.MHDomain.childrenOfTask(tasks, parentId, true);
+      var index;
+      for (index = 0; index < children.length; index += 1) {
+        appendTimerOption(select, children[index].id, prefix + children[index].name, selectedId);
+        visit(children[index].id, prefix + "  ");
+      }
+    };
     if (!select) { return; }
     if (!data.tasks) { data.tasks = []; }
     tasks = window.MHDomain.tasksForProject(data.tasks, projectId, selectedId);
     while (select.firstChild) { select.removeChild(select.firstChild); }
     appendTimerOption(select, "", "No task", selectedId);
-    for (index = 0; index < tasks.length; index += 1) {
-      appendTimerOption(select, tasks[index].id, tasks[index].name, selectedId);
-    }
+    visit(null, "");
   }
 
   function renderFavorites() {
@@ -389,7 +399,7 @@
       item.className = "favorite-item";
       label = document.createElement("span");
       label.className = "favorite-label";
-      setText(label, String(index + 1) + ". " + (task ? task.name : (project ? project.name : "Favorite")));
+      setText(label, String(index + 1) + ". " + (task ? window.MHDomain.taskPath(data.tasks, task.id) : (project ? project.name : "Favorite")));
       play = document.createElement("button");
       play.className = "favorite-play";
       play.type = "button";
@@ -405,7 +415,7 @@
   function favoriteDisplayName(favorite) {
     var project = window.MHDomain.findById(data.projects, favorite.projectId);
     var task = favorite.taskId ? window.MHDomain.findById(data.tasks, favorite.taskId) : null;
-    return task ? task.name : (project ? project.name : "Favorite");
+    return task ? window.MHDomain.taskPath(data.tasks, task.id) : (project ? project.name : "Favorite");
   }
 
   function saveFavorites() {
@@ -653,7 +663,7 @@
       show(save);
       show(reset);
       setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
-      setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
+      setText(byId("active-timer-task"), timer.taskId ? " / " + (window.MHDomain.taskPath(data.tasks, timer.taskId) || "Task") : "");
       setText(byId("active-timer-toggle"), "Pause");
       setText(byId("timer-state"), "Running - saved on this device");
       setText(toggle, "Pause timer");
@@ -665,7 +675,7 @@
       show(save);
       show(reset);
       setText(byId("active-timer-project"), (window.MHDomain.findById(data.projects, timer.projectId) || {}).name || "Project");
-      setText(byId("active-timer-task"), timer.taskId ? " / " + ((window.MHDomain.findById(data.tasks, timer.taskId) || {}).name || "Task") : "");
+      setText(byId("active-timer-task"), timer.taskId ? " / " + (window.MHDomain.taskPath(data.tasks, timer.taskId) || "Task") : "");
       setText(byId("active-timer-toggle"), "Resume");
       setText(byId("timer-state"), "Paused - elapsed time is saved");
       setText(toggle, "Resume timer");

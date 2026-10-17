@@ -40,9 +40,9 @@ projects = [
   { id: "p2", name: "Old", archived: true }
 ];
 tasks = [
-  { id: "t1", projectId: "p1", name: "Build", archived: false },
-  { id: "t2", projectId: "p1", name: "Old task", archived: true },
-  { id: "t3", projectId: "p2", name: "Other", archived: false }
+  { id: "t1", projectId: "p1", parentTaskId: null, name: "Build", archived: false },
+  { id: "t2", projectId: "p1", parentTaskId: "t1", name: "Frontend", archived: true },
+  { id: "t3", projectId: "p2", parentTaskId: null, name: "Other", archived: false }
 ];
 entries = [
   { id: "e1", date: "2026-10-16", durationSeconds: 1800, createdAt: "2026-10-16T08:00:00Z" },
@@ -53,6 +53,11 @@ entries = [
 assert.strictEqual(domain.activeProjects(projects).length, 1);
 assert.strictEqual(domain.tasksForProject(tasks, "p1", "").length, 1);
 assert.strictEqual(domain.tasksForProject(tasks, "p1", "t2").length, 2);
+assert.strictEqual(domain.childrenOfTask(tasks, "t1", true)[0].id, "t2");
+assert.strictEqual(domain.descendantsOfTask(tasks, "t1").length, 1);
+assert.strictEqual(domain.taskPath(tasks, "t2"), "Build / Frontend");
+assert.strictEqual(domain.isDescendant(tasks, "t2", "t1"), true);
+assert.strictEqual(domain.isDescendant(tasks, "t1", "t2"), false);
 assert.strictEqual(domain.entriesForDate(entries, "2026-10-16")[0].id, "e2");
 assert.strictEqual(domain.totalForDate(entries, "2026-10-16"), 6300);
 assert.strictEqual(domain.sumDurationSeconds(entries), 9900);

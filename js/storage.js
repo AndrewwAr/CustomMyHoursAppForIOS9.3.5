@@ -2,7 +2,7 @@
   "use strict";
 
   var STORAGE_KEY = "myhours-custom.phase1.data";
-  var SCHEMA_VERSION = 4;
+  var SCHEMA_VERSION = 5;
 
   function createEmptyData() {
     return {
@@ -13,7 +13,8 @@
       tasks: [],
       timeEntries: [],
       settings: {
-        selectedDate: null
+        selectedDate: null,
+        favorites: []
       },
       metadata: {
         createdAt: null,
@@ -107,6 +108,7 @@
     return !!task && typeof task.id === "string" &&
       typeof task.projectId === "string" && typeof task.name === "string" &&
       task.name.length > 0 && typeof task.archived === "boolean" &&
+      (typeof task.parentTaskId === "undefined" || task.parentTaskId === null || typeof task.parentTaskId === "string") &&
       typeof task.createdAt === "string" && typeof task.updatedAt === "string";
   }
 
@@ -170,6 +172,15 @@
       if (!findItem(data.projects, data.tasks[index].projectId)) {
         return false;
       }
+      if (data.tasks[index].parentTaskId !== null && typeof data.tasks[index].parentTaskId !== "undefined") {
+        task = findItem(data.tasks, data.tasks[index].parentTaskId);
+        if (!task || task.projectId !== data.tasks[index].projectId || task.id === data.tasks[index].id) {
+          return false;
+        }
+        if (hasTaskCycle(data.tasks, data.tasks[index].id)) {
+          return false;
+        }
+      }
     }
 
     for (index = 0; index < data.timeEntries.length; index += 1) {
@@ -195,6 +206,17 @@
     }
 
     return true;
+  }
+
+  function hasTaskCycle(tasks, taskId) {
+    var seen = {};
+    var current = findItem(tasks, taskId);
+    while (current && current.parentTaskId) {
+      if (seen[current.id]) { return true; }
+      seen[current.id] = true;
+      current = findItem(tasks, current.parentTaskId);
+    }
+    return !!(current && seen[current.id]);
   }
 
   function isValidVersion2(data) {
@@ -242,15 +264,13 @@
         projects: [],
         tasks: [],
         timeEntries: [],
-        settings: {
-          selectedDate: null
-        },
+        settings: { selectedDate: null, favorites: [] },
         metadata: data.metadata
       };
     }
 
     if (isValidVersion3(data)) {
-      data.schemaVersion = SCHEMA_VERSION;
+      data.schemaVersion = 4;
       data.timer = data.timer ? {
         status: data.timer.status,
         startedAtMs: data.timer.startedAtMs,
@@ -270,6 +290,18 @@
           description: entry.description, tag: entry.tag || "", billable: entry.billable,
           createdAt: entry.createdAt, updatedAt: entry.updatedAt
         };
+      });
+    }
+
+    if (data && data.schemaVersion === 4 && validateRecords(data.records) &&
+        isValidLegacyTimer(data.timer) && everyItem(data.projects, isValidProject) &&
+        everyItem(data.tasks, isValidTask) && everyItem(data.timeEntries, isValidTimeEntry) &&
+        isValidSettings(data.settings) && data.metadata && typeof data.metadata === "object") {
+      data.schemaVersion = SCHEMA_VERSION;
+      data.settings.favorites = data.settings.favorites || [];
+      data.tasks = data.tasks.map(function (task) {
+        task.parentTaskId = task.parentTaskId || null;
+        return task;
       });
     }
 

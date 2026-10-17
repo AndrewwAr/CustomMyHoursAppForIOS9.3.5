@@ -51,7 +51,7 @@
       entry = state.data.timeEntries[index];
       project = state.domain.findById(state.data.projects, entry.projectId);
       task = entry.taskId ? state.domain.findById(state.data.tasks, entry.taskId) : null;
-      lines.push([entry.date, project ? project.name : "", task ? task.name : "", entry.durationSeconds, entry.description, entry.billable ? "Yes" : "No"].map(csvCell).join(","));
+      lines.push([entry.date, project ? project.name : "", task ? state.domain.taskPath(state.data.tasks, task.id) : "", entry.durationSeconds, entry.description, entry.billable ? "Yes" : "No"].map(csvCell).join(","));
     }
     download("myhours-entries.csv", lines.join("\r\n"), "text/csv");
   }

@@ -93,15 +93,42 @@
 
   function fillTaskSelect(select, projectId, selectedId) {
     var tasks = state.domain.tasksForProject(state.data.tasks, projectId, selectedId);
-    var task;
     var index;
+    var task;
+    var visit = function (parentId, prefix) {
+      var children = state.domain.childrenOfTask(tasks, parentId, true);
+      var childIndex;
+      for (childIndex = 0; childIndex < children.length; childIndex += 1) {
+        task = children[childIndex];
+        appendOption(select, task.id, prefix + task.name + (task.archived ? " (archived)" : ""), selectedId);
+        visit(task.id, prefix + "  ");
+      }
+    };
 
     clearChildren(select);
     appendOption(select, "", "No task", selectedId);
-    for (index = 0; index < tasks.length; index += 1) {
-      task = tasks[index];
-      appendOption(select, task.id, task.name + (task.archived ? " (archived)" : ""), selectedId);
-    }
+    visit(null, "");
+  }
+
+  function fillParentTaskSelect(projectId, selectedId, excludedId) {
+    var select = byId("task-parent");
+    var tasks = state.domain.tasksForProject(state.data.tasks, projectId, selectedId);
+    var visit = function (parentId, prefix) {
+      var children = state.domain.childrenOfTask(tasks, parentId, true);
+      var index;
+      var task;
+      for (index = 0; index < children.length; index += 1) {
+        task = children[index];
+        if (task.id !== excludedId && !state.domain.isDescendant(tasks, task.id, excludedId)) {
+          appendOption(select, task.id, prefix + task.name + (task.archived ? " (archived)" : ""), selectedId);
+          visit(task.id, prefix + "  ");
+        }
+      }
+    };
+    if (!select) { return; }
+    clearChildren(select);
+    appendOption(select, "", "No parent (top level)", selectedId || "");
+    visit(null, "");
   }
 
   function resetProjectForm() {
@@ -120,6 +147,7 @@
     text(byId("task-submit"), "Add task");
     hide(byId("task-cancel"));
     fillProjectSelect(byId("task-project"), "", false);
+    fillParentTaskSelect("", "", "");
   }
 
   function resetEntryForm() {
@@ -184,6 +212,7 @@
   function saveTask(event) {
     var id = byId("task-id").value;
     var projectId = byId("task-project").value;
+    var parentTaskId = byId("task-parent").value || null;
     var name = state.domain.trim(byId("task-name").value);
     var existing = state.domain.findById(state.data.tasks, id);
     var project = state.domain.findById(state.data.projects, projectId);
@@ -194,13 +223,24 @@
       text(byId("task-error"), "Select an active project.");
       return;
     }
+    if (parentTaskId) {
+      var parentTask = state.domain.findById(state.data.tasks, parentTaskId);
+      if (!parentTask || parentTask.projectId !== projectId || (existing && (parentTask.id === existing.id || state.domain.isDescendant(state.data.tasks, parentTask.id, existing.id)))) {
+        text(byId("task-error"), "Choose a valid parent task from this project.");
+        return;
+      }
+    }
     if (!name) {
       text(byId("task-error"), "Enter a task name.");
       byId("task-name").focus();
       return;
     }
-    if (state.domain.hasDuplicateName(state.data.tasks, name, projectId, id)) {
-      text(byId("task-error"), "This project already has an active task with that name.");
+    var siblingDuplicate = state.data.tasks.some(function (candidate) {
+      return candidate.id !== id && !candidate.archived && candidate.projectId === projectId &&
+        (candidate.parentTaskId || null) === parentTaskId && state.domain.trim(candidate.name).toLowerCase() === name.toLowerCase();
+    });
+    if (siblingDuplicate) {
+      text(byId("task-error"), "This parent already has an active task with that name.");
       return;
     }
 
@@ -208,12 +248,14 @@
       if (existing) {
         existing.projectId = projectId;
         existing.name = name;
+        existing.parentTaskId = parentTaskId;
         existing.updatedAt = now;
       } else {
         state.data.tasks.push({
           id: createId("task"),
           projectId: projectId,
           name: name,
+          parentTaskId: parentTaskId,
           archived: false,
           createdAt: now,
           updatedAt: now
@@ -310,9 +352,20 @@
     }
     byId("task-id").value = task.id;
     fillProjectSelect(byId("task-project"), task.projectId, false);
+    fillParentTaskSelect(task.projectId, task.parentTaskId || "", task.id);
     byId("task-name").value = task.name;
     text(byId("task-submit"), "Save task");
     show(byId("task-cancel"));
+    byId("task-name").focus();
+  }
+
+  function addSubtask(parentId) {
+    var parent = state.domain.findById(state.data.tasks, parentId);
+    if (!parent) { return; }
+    resetTaskForm();
+    fillProjectSelect(byId("task-project"), parent.projectId, false);
+    fillParentTaskSelect(parent.projectId, parent.id, "");
+    byId("task-parent").value = parent.id;
     byId("task-name").focus();
   }
 
@@ -469,21 +522,34 @@
         text(taskItem, "No tasks");
         taskList.appendChild(taskItem);
       }
-      for (taskIndex = 0; taskIndex < tasks.length; taskIndex += 1) {
-        taskItem = document.createElement("li");
-        taskItem.className = "task-item" + (tasks[taskIndex].archived ? " is-archived" : "");
-        text(taskItem, tasks[taskIndex].name + (tasks[taskIndex].archived ? " (archived)" : ""));
-        taskActions = document.createElement("span");
-        taskActions.className = "task-actions";
-        if (!tasks[taskIndex].archived && !project.archived) {
-          taskActions.appendChild(actionButton("Edit", "task-edit", tasks[taskIndex].id, false));
+      var renderTaskTree = function (parentId, container) {
+        var children = state.domain.childrenOfTask(tasks, parentId, true);
+        var childIndex;
+        var child;
+        var nested;
+        for (childIndex = 0; childIndex < children.length; childIndex += 1) {
+          child = children[childIndex];
+          taskItem = document.createElement("li");
+          taskItem.className = "task-item" + (child.archived ? " is-archived" : "");
+          text(taskItem, child.name + (child.archived ? " (archived)" : ""));
+          taskActions = document.createElement("span");
+          taskActions.className = "task-actions";
+          if (!child.archived && !project.archived) {
+            taskActions.appendChild(actionButton("Edit", "task-edit", child.id, false));
+            taskActions.appendChild(actionButton("+ Subtask", "task-add-child", child.id, false));
+          }
+          if (!project.archived) {
+            taskActions.appendChild(actionButton(child.archived ? "Restore" : "Archive", "task-toggle", child.id, !child.archived));
+          }
+          taskItem.appendChild(taskActions);
+          container.appendChild(taskItem);
+          nested = document.createElement("ul");
+          nested.className = "task-list task-children";
+          renderTaskTree(child.id, nested);
+          if (nested.firstChild) { container.appendChild(nested); }
         }
-        if (!project.archived) {
-          taskActions.appendChild(actionButton(tasks[taskIndex].archived ? "Restore" : "Archive", "task-toggle", tasks[taskIndex].id, !tasks[taskIndex].archived));
-        }
-        taskItem.appendChild(taskActions);
-        taskList.appendChild(taskItem);
-      }
+      };
+      renderTaskTree(null, taskList);
       card.appendChild(taskList);
       list.appendChild(card);
     }
@@ -538,7 +604,7 @@
         item.style.borderLeftColor = project ? project.color : "#667985";
         title = document.createElement("span");
         title.className = "entry-title";
-        text(title, (project ? project.name : "Unknown project") + (task ? " / " + task.name : ""));
+        text(title, (project ? project.name : "Unknown project") + (task ? " / " + state.domain.taskPath(state.data.tasks, task.id) : ""));
         description = document.createElement("span");
         description.className = "entry-description";
         text(description, String(group.count) + " log" + (group.count === 1 ? "" : "s") + " grouped");
@@ -562,7 +628,7 @@
       item.style.borderLeftColor = project ? project.color : "#667985";
       title = document.createElement("span");
       title.className = "entry-title";
-      text(title, (project ? project.name : "Unknown project") + (task ? " / " + task.name : ""));
+      text(title, (project ? project.name : "Unknown project") + (task ? " / " + state.domain.taskPath(state.data.tasks, task.id) : ""));
       description = document.createElement("span");
       description.className = "entry-description";
       text(description, entry.description || "No description");
@@ -595,6 +661,7 @@
     fillProjectSelect(byId("entry-project"), currentProject, !!editingEntry);
     fillTaskSelect(byId("entry-task"), byId("entry-project").value, currentTask);
     fillProjectSelect(byId("task-project"), taskProject, false);
+    fillParentTaskSelect(byId("task-project").value, byId("task-parent").value || "", byId("task-id").value);
   }
 
   function renderAll() {
@@ -615,6 +682,7 @@
     if (action === "project-edit") { editProject(id); }
     if (action === "project-toggle") { toggleProject(id); }
     if (action === "task-edit") { editTask(id); }
+    if (action === "task-add-child") { addSubtask(id); }
     if (action === "task-toggle") { toggleTask(id); }
   }
 
@@ -656,6 +724,9 @@
     byId("entry-list").onclick = handleEntryActions;
     byId("entry-project").onchange = function () {
       fillTaskSelect(byId("entry-task"), byId("entry-project").value, "");
+    };
+    byId("task-project").onchange = function () {
+      fillParentTaskSelect(byId("task-project").value, "", byId("task-id").value);
     };
     byId("selected-date").onchange = changeSelectedDate;
   }

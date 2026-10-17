@@ -65,6 +65,21 @@ Deployment commit: `7c2e5b2`
 
 Physical acceptance: passed on the iPad 2 running iOS 9.3.5.
 
+## Hierarchical tasks implementation (version 8.0.0-hierarchy)
+
+- [x] Add schema v5 migration with nullable `parentTaskId` on tasks.
+- [x] Validate parent existence, same-project ownership, self-parenting, and cycles.
+- [x] Add arbitrary-depth task tree helpers and path formatting.
+- [x] Render nested tasks in Projects with indentation and Add subtask actions.
+- [x] Add parent-task selection when creating or editing tasks, excluding cycles.
+- [x] Display hierarchical task options in entry, timer, and favorite selectors.
+- [x] Display full task paths in entries, active timers, favorites, and CSV exports.
+- [x] Preserve hierarchy through JSON backup export/import and legacy migration.
+- [x] Add storage/domain regression tests for nested tasks, migration, and cycles.
+- [x] Run compatibility, DOM, and ES5 checks.
+- [ ] Complete interactive desktop browser verification.
+- [ ] Complete physical iPad 2 verification.
+
 ## Phase 3 implementation
 
 - [x] Upgrade stored time entries to exact-second durations without losing data.

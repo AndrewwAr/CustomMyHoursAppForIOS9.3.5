@@ -142,6 +142,59 @@
     });
   }
 
+  function childrenOfTask(tasks, parentTaskId, includeArchived) {
+    return tasks.filter(function (task) {
+      return (task.parentTaskId || null) === (parentTaskId || null) &&
+        (includeArchived || !task.archived);
+    }).sort(function (left, right) {
+      if (typeof left.sortOrder === "number" && typeof right.sortOrder === "number" && left.sortOrder !== right.sortOrder) {
+        return left.sortOrder - right.sortOrder;
+      }
+      return left.name.toLowerCase() < right.name.toLowerCase() ? -1 : 1;
+    });
+  }
+
+  function descendantsOfTask(tasks, taskId) {
+    var result = [];
+    var queue = [taskId];
+    var index;
+    var children;
+    while (queue.length) {
+      children = childrenOfTask(tasks, queue.shift(), true);
+      for (index = 0; index < children.length; index += 1) {
+        result.push(children[index]);
+        queue.push(children[index].id);
+      }
+    }
+    return result;
+  }
+
+  function ancestorsOfTask(tasks, taskId) {
+    var result = [];
+    var current = findById(tasks, taskId);
+    while (current && current.parentTaskId) {
+      current = findById(tasks, current.parentTaskId);
+      if (current) { result.unshift(current); }
+    }
+    return result;
+  }
+
+  function taskPath(tasks, taskId) {
+    var path = ancestorsOfTask(tasks, taskId);
+    var task = findById(tasks, taskId);
+    if (task) { path.push(task); }
+    return path.map(function (item) { return item.name; }).join(" / ");
+  }
+
+  function isDescendant(tasks, taskId, possibleAncestorId) {
+    var current = findById(tasks, taskId);
+    while (current && current.parentTaskId) {
+      if (current.parentTaskId === possibleAncestorId) { return true; }
+      current = findById(tasks, current.parentTaskId);
+    }
+    return false;
+  }
+
   function entriesForDate(entries, selectedDate) {
     return entries.filter(function (entry) {
       return entry.date === selectedDate;
@@ -207,6 +260,11 @@
     findById: findById,
     activeProjects: activeProjects,
     tasksForProject: tasksForProject,
+    childrenOfTask: childrenOfTask,
+    descendantsOfTask: descendantsOfTask,
+    ancestorsOfTask: ancestorsOfTask,
+    taskPath: taskPath,
+    isDescendant: isDescendant,
     entriesForDate: entriesForDate,
     totalForDate: totalForDate,
     hasDuplicateName: hasDuplicateName,
