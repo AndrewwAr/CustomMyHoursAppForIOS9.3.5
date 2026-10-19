@@ -1,7 +1,7 @@
 (function (window, document) {
   "use strict";
 
-  var APP_VERSION = "8.0.1-hierarchy-delete";
+  var APP_VERSION = "8.0.2-andrews-hours";
   var repository;
   var data;
   var storageStatus;
@@ -879,7 +879,7 @@
 
   function buildDiagnosticReport() {
     var values = diagnosticValues();
-    var lines = ["My Hours Custom diagnostics"];
+    var lines = ["Andrew's Hours diagnostics"];
     var index;
 
     for (index = 0; index < values.length; index += 1) {

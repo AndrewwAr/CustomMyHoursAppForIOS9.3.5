@@ -1,4 +1,4 @@
-# My Hours Custom
+# Andrew's Hours
 
 A standalone, local-first time tracker targeting Safari on an iPad 2 running
 iOS 9.3.5. The application is intentionally built with HTML, conservative CSS,
